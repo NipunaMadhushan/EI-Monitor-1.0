@@ -21,91 +21,51 @@ import org.osgi.framework.BundleContext;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.wso2.carbon.eimonitor.incident.handler.IncidentHandler;
-import org.wso2.carbon.eimonitor.monitor.CpuMemory;
-import org.wso2.carbon.eimonitor.monitor.HeapMemory;
-import org.wso2.carbon.eimonitor.monitor.LoadAverage;
-import org.wso2.carbon.eimonitor.monitor.ThreadStatus;
-import javax.management.MBeanServerConnection;
+import org.wso2.carbon.eimonitor.monitor.*;
 import java.util.*;
+import static org.wso2.carbon.eimonitor.configurations.configuredvalues.MonitorConstants.MONITORING_TIME_PERIOD;
+import static org.wso2.carbon.eimonitor.configurations.configuredvalues.DirectoryNames.*;
 
-public class Activator implements BundleActivator{
+public class Activator implements BundleActivator {
 
     static BundleContext bundleContext;
 
     private static final Logger LOGGER = LogManager.getLogger();
-
-    //define the configurations
-    private static final int MONITORING_TIME_PERIOD = Integer.parseInt(Objects.requireNonNull(Configurations.getProperty("MONITORING_TIME_PERIOD")));
-    public static final int DATA_EXTRACTING_TIME_PERIOD = Integer.parseInt(Objects.requireNonNull(Configurations.getProperty("DATA_EXTRACTING_TIME_PERIOD")));
-    public static final int DATA_EXTRACTING_COUNT_THRESHOLD = Integer.parseInt(Objects.requireNonNull(Configurations.getProperty("DATA_EXTRACTING_COUNT_THRESHOLD")));
-    public static final float HEAP_RATIO_THRESHOLD = Float.parseFloat(Objects.requireNonNull(Configurations.getProperty("HEAP_RATIO_THRESHOLD")));
-    public static final float CPU_RATIO_THRESHOLD = Float.parseFloat(Objects.requireNonNull(Configurations.getProperty("CPU_RATIO_THRESHOLD")));
-    public static final float LOAD_AVERAGE_THRESHOLD = Float.parseFloat(Objects.requireNonNull(Configurations.getProperty("LOAD_AVERAGE_THRESHOLD")));
-    public static final float BLOCK_TIME_THRESHOLD = Float.parseFloat(Objects.requireNonNull(Configurations.getProperty("BLOCKED_TIME_THRESHOLD")));
-
-    //connect to the JMX connector of WSO2 EI
-    public static final MBeanServerConnection BEAN_SERVER_CONNECTION = JMXConnection.getJMXConnection();
-
-    //define the directories
-    public static final String DATABASE_DIRECTORY = Objects.requireNonNull(Configurations.getProperty("BASE_DIRECTORY"));
-    public static final String HEAP_DUMP_FILE_DIRECTORY = DATABASE_DIRECTORY + "/Data/Heap Dumps";
-    public static final String THREAD_DUMP_FILE_DIRECTORY = DATABASE_DIRECTORY + "/Data/Thread Dumps";
-    public static final String NETWORK_LOAD_FILE_DIRECTORY = DATABASE_DIRECTORY + "/Data/Network Load";
-    public static final String NETWORK_LOAD_FILE_NAME = "networkLoad.txt";
-
     public static final long START_TIME = System.currentTimeMillis();
-
     public static boolean incidentHandlerState = false;
     public static int dataExtractCount = 0;
 
+    /**
+     * This method starts the bundle activator and the EI Monitor.
+     * @param bundleContext is equal to the bundle contest of the class
+     * @throws Exception
+     */
     public void start(BundleContext bundleContext) throws Exception {
 
         Activator.bundleContext = bundleContext;
 
+        Thread.sleep(20000);
+
         while (true) {
-
             //cleaning the file directories of data
-            FileCleaner.cleanDirectory(DATABASE_DIRECTORY +"/Data");
-
+            FileCleaner.cleanDirectory(BASE_DIRECTORY +"/Data");
             //generating the file directories of data
-            FileGenerator.generateDirectory(DATABASE_DIRECTORY +"/Data");
-            FileGenerator.generateDirectory(HEAP_DUMP_FILE_DIRECTORY);
-            FileGenerator.generateDirectory(THREAD_DUMP_FILE_DIRECTORY);
-            FileGenerator.generateDirectory(NETWORK_LOAD_FILE_DIRECTORY);
-            FileGenerator.generateFile(NETWORK_LOAD_FILE_DIRECTORY, NETWORK_LOAD_FILE_NAME);
+            FileGenerator.generateAllDirectories();
 
             dataExtractCount = 0;
 
+            //monitoring the WSO2 EI server and checking whether there is an incident is happening or not
             while (!incidentHandlerState) {
+                //getting monitor details
+                List<Float> monitorValues = Monitor.getMonitorDetails();
 
-                //get the monitoring details
-                long currentTime = System.currentTimeMillis();
-                float heapMemoryRatio = HeapMemory.getHeapMemoryUsage(BEAN_SERVER_CONNECTION);
-                float cpuMemoryRatio = CpuMemory.getCpuMemoryUsage(BEAN_SERVER_CONNECTION);
-                float loadAverage = (float) LoadAverage.getSystemLoadAverage(BEAN_SERVER_CONNECTION);
-                int maxBlockedTime = ThreadStatus.getThreadStatusDetails();
-                float averageMaxBlockedTime = (float) maxBlockedTime / (float) (currentTime - START_TIME);
+                LOGGER.info("Heap Memory Percentage : " + monitorValues.get(0) * 100 +
+                        "% , CPU Memory Percentage : " + monitorValues.get(1) * 100 + "% , Load Average : " +
+                        monitorValues.get(2) + " , Average Maximum Blocked Time : " + monitorValues.get(3));
 
-                //LOGGER.info("Heap Memory Percentage : " + heapMemoryRatio * 100 + "% , CPU Memory Percentage : " + cpuMemoryRatio * 100 + "% , Load Average : "
-                //        + loadAverage + " , Average Maximum Blocked Time : " + averageMaxBlockedTime);
-
-                //adding the threshold values to list
-                List<Float> thresholdValues = new ArrayList<>();
-                thresholdValues.add(HEAP_RATIO_THRESHOLD);
-                thresholdValues.add(CPU_RATIO_THRESHOLD);
-                thresholdValues.add(LOAD_AVERAGE_THRESHOLD);
-                thresholdValues.add(BLOCK_TIME_THRESHOLD);
-
-                //adding the monitoring values to a list
-                List<Float> monitorValues = new ArrayList<>();
-                monitorValues.add(heapMemoryRatio);
-                monitorValues.add(cpuMemoryRatio);
-                monitorValues.add(loadAverage);
-                monitorValues.add(averageMaxBlockedTime);
 
                 //check whether there is an incident is happening or not
-                incidentHandlerState = IncidentHandler.handleAll(thresholdValues, monitorValues);
-
+                incidentHandlerState = IncidentHandler.handleAll(monitorValues);
                 Thread.sleep(MONITORING_TIME_PERIOD);
             }
 
@@ -116,6 +76,11 @@ public class Activator implements BundleActivator{
         }
     }
 
+    /**
+     * This methos stops the bundle activator and the EI Monitor.
+     * @param bundleContext is equal to null
+     * @throws Exception
+     */
     public void stop(BundleContext bundleContext) throws Exception {
         Activator.bundleContext = null;
     }

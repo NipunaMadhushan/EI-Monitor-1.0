@@ -20,10 +20,11 @@ import static org.wso2.carbon.eimonitor.Activator.*;
 
 public class DataExtractor {
 
-    public static void storeData(){
-
-        HeapDumpGenerator.getHeapDump(dataExtractCount, BEAN_SERVER_CONNECTION);
-        ThreadDumpGenerator.getThreadDump(dataExtractCount, BEAN_SERVER_CONNECTION);
-        NetworkLoadGenerator.getNetworkLoad(BEAN_SERVER_CONNECTION);
+    /**
+     * This method stores the data of heap dump generator,thread dump generator and the network load generator.
+     */
+    public static void storeData() {
+        HeapDumpGenerator.getHeapDump(dataExtractCount);
+        ThreadDumpGenerator.getThreadDump(dataExtractCount);
     }
 }

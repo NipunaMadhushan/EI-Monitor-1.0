@@ -16,36 +16,24 @@
 
 package org.wso2.carbon.eimonitor.monitor;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import javax.management.JMX;
-import javax.management.MBeanServerConnection;
-import javax.management.ObjectName;
+import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 
 public class HeapMemory {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    /**
+     *This method returns the Heap Memory Usage as a ratio of used heap memory to committed heap memory at an instance
+     *time.
+     * @return heapMemoryRatio as a float
+     */
+    public static float getHeapMemoryUsage() {
+        MemoryMXBean memoryMXBeanProxy = ManagementFactory.getMemoryMXBean();
 
-    public static float getHeapMemoryUsage(MBeanServerConnection beanServerConnection){
+        //calculating heap memory ratio
+        float usedHeapMemory = (float)memoryMXBeanProxy.getHeapMemoryUsage().getUsed();
+        float committedHeapMemory = (float)memoryMXBeanProxy.getHeapMemoryUsage().getCommitted();
+        float heapMemoryRatio = usedHeapMemory / committedHeapMemory;
 
-        try{
-            //for virtual machines
-            //MemoryMXBean memoryMXBeanProxy = ManagementFactory.getMemoryMXBean();
-
-            //for the JMX Connections
-            ObjectName name = new ObjectName("java.lang:type=Memory");
-            MemoryMXBean memoryMXBeanProxy = JMX.newMXBeanProxy(beanServerConnection,name,MemoryMXBean.class);
-
-            float usedHeapMemory = (float)memoryMXBeanProxy.getHeapMemoryUsage().getUsed();
-            float committedHeapMemory = (float) memoryMXBeanProxy.getHeapMemoryUsage().getCommitted();
-            float heapMemoryRatio = usedHeapMemory/committedHeapMemory;
-
-            return heapMemoryRatio;
-
-        } catch (Exception e) {
-            LOGGER.error("Failed to read the Heap Memory Usage!!! " + e.getMessage());
-        }
-        return Float.parseFloat(null);
+        return heapMemoryRatio;
     }
 }

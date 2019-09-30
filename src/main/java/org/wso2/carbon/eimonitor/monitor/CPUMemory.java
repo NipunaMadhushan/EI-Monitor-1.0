@@ -16,19 +16,23 @@
 
 package org.wso2.carbon.eimonitor.monitor;
 
+import com.sun.management.OperatingSystemMXBean;
 import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
 
-public class LoadAverage {
+public class CPUMemory {
 
     /**
-     *This method returns the System Load Average.
-     * @return systemLoadAverage as a float
+     * This method returns the CPU Memory Usage as a ratio of used CPU memory to total CPU memory at an instance time.
+     * @return cpuUsage as a float
      */
-    public static double getSystemLoadAverage() {
-        OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
-        Object systemLoadAverage = operatingSystemMXBean.getSystemLoadAverage();
+    public static float getCPUMemoryUsage() {
+        OperatingSystemMXBean operatingSystemMXBean =
+                (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+        //calculating the CPU memory ratio
+        long totalMemory = operatingSystemMXBean.getTotalPhysicalMemorySize();
+        long freeMemory = operatingSystemMXBean.getFreePhysicalMemorySize();
+        float cpuUsage = (float)freeMemory / (float)totalMemory;
 
-        return (double) systemLoadAverage;
+        return cpuUsage;
     }
 }

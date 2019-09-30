@@ -14,21 +14,15 @@
  *  * limitations under the License.
  */
 
-package org.wso2.carbon.eimonitor.monitor;
+package org.wso2.carbon.eimonitor.configurations.configuredvalues;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
+import org.wso2.carbon.eimonitor.configurations.Configurations;
+import java.util.Objects;
 
-public class LoadAverage {
-
-    /**
-     *This method returns the System Load Average.
-     * @return systemLoadAverage as a float
-     */
-    public static double getSystemLoadAverage() {
-        OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
-        Object systemLoadAverage = operatingSystemMXBean.getSystemLoadAverage();
-
-        return (double) systemLoadAverage;
-    }
+/**
+ * This class provides the configurable threshold values for Data Extractor.
+ */
+public class DataExtractThresholdValues {
+    public static final int DATA_EXTRACTING_TIME_PERIOD = Integer.parseInt(Objects.requireNonNull(Configurations.getProperty("DATA_EXTRACTING_TIME_PERIOD")));
+    public static final int DATA_EXTRACTING_COUNT_THRESHOLD = Integer.parseInt(Objects.requireNonNull(Configurations.getProperty("DATA_EXTRACTING_COUNT_THRESHOLD")));
 }

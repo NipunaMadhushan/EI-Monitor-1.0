@@ -30,22 +30,28 @@ public class FileCleaner {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static void cleanFiles(String fileLocation){
-
+    /**
+     * This method deletes all the files in a given file location but not the directory.
+     * Folder will remain as an empty folder.
+     * @param fileLocation File location where the files should be deleted
+     */
+    public static void cleanFiles(String fileLocation) {
         try {
             final Stream<Path> walk = Files.walk(Paths.get(fileLocation));
             walk.filter(Files::isRegularFile).map(Path::toFile).forEach(File::delete);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             LOGGER.error("Failed to clean the files !!! " + e.getMessage());
         }
     }
 
+    /**
+     * This method deletes the whole directory including the sub folders and the files inside the directory.
+     * @param directory Directory which should be deleted
+     */
     public static void cleanDirectory(String directory) {
-
         try {
             FileUtils.deleteDirectory(new File(directory));
-        }catch (Exception e){
+        } catch (IOException e) {
             LOGGER.error("Failed to delete the directory " + directory + e.getMessage());
         }
     }

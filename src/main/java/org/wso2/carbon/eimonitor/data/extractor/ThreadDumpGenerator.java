@@ -18,33 +18,29 @@ package org.wso2.carbon.eimonitor.data.extractor;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import javax.management.MBeanServerConnection;
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
-import static org.wso2.carbon.eimonitor.Activator.THREAD_DUMP_FILE_DIRECTORY;
+import static org.wso2.carbon.eimonitor.configurations.configuredvalues.DirectoryNames.THREAD_DUMP_FILE_DIRECTORY;
 
 public class ThreadDumpGenerator {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static void getThreadDump(int number,MBeanServerConnection beanServerConnection){
+    /**
+     * This method generates thread dump as string into a string builder.
+     * @param number Thread dump number
+     */
+    public static void getThreadDump(int number) {
         try {
-            //for virtual machines
+            //getting the thread details of each threads
             StringBuilder dump = new StringBuilder();
             ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
             ThreadInfo[] threadInfos = threadMXBean.getThreadInfo(threadMXBean.getAllThreadIds(),1000);
 
-            //for the JMX servers
-            //ObjectName name = new ObjectName("java.lang:type=Threading");
-            //StringBuilder dump = new StringBuilder();
-            //ThreadMXBean threadMXBean = JMX.newMBeanProxy(beanServerConnection,name,ThreadMXBean.class);
-            //threadMXBean.setThreadContentionMonitoringEnabled(true);
-            //final ThreadInfo[] threadInfos = threadMXBean.getThreadInfo(threadMXBean.getAllThreadIds(),1000);
-
-            //putting the thread infos into the string builder
-            for (ThreadInfo threadInfo : threadInfos){
+            //writing the thread infos into the string builder to create thread dump
+            for (ThreadInfo threadInfo : threadInfos) {
                 dump.append('"');
                 dump.append(threadInfo.getThreadName());
                 dump.append("\"");
@@ -55,14 +51,13 @@ public class ThreadDumpGenerator {
 
                 final StackTraceElement[] stackTraceElements = threadInfo.getStackTrace();
 
-                for (final StackTraceElement stackTraceElement : stackTraceElements){
+                for (final StackTraceElement stackTraceElement : stackTraceElements) {
                     dump.append("\n at ");
                     dump.append(stackTraceElement);
                 }
 
                 dump.append("\n\n");
             }
-
             //writing the thread dump into a text file
             threadDumpWriter(number,dump.toString());
 
@@ -73,8 +68,13 @@ public class ThreadDumpGenerator {
         }
     }
 
+    /**
+     * This method writes the thread dump into a text file in the file directory we have configured in the
+     * EI_Monitor_Configuration.properties file.
+     * @param number Thread dump number
+     * @param threadDump Generated thread dump as a string
+     */
     private static void threadDumpWriter(int number, String threadDump) {
-
         String fileName = "ThreadDump-" + number + ".txt";
         String dumpFile = THREAD_DUMP_FILE_DIRECTORY + "/" + fileName;
         try {
@@ -82,7 +82,8 @@ public class ThreadDumpGenerator {
             outputStream.println(threadDump);
             outputStream.flush();
             outputStream.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             LOGGER.error("Thread dump generation failed !!! " + e.getMessage());
         }
     }

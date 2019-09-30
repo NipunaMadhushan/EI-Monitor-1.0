@@ -16,39 +16,39 @@
 
 package org.wso2.carbon.eimonitor.data.extractor;
 
+import com.sun.management.HotSpotDiagnosticMXBean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import javax.management.MBeanServerConnection;
-import java.lang.reflect.Method;
-import static org.wso2.carbon.eimonitor.Activator.HEAP_DUMP_FILE_DIRECTORY;
+import javax.management.MBeanServer;
+import static org.wso2.carbon.eimonitor.configurations.configuredvalues.DirectoryNames.HEAP_DUMP_FILE_DIRECTORY;
 
 public class HeapDumpGenerator {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static void getHeapDump(int number,MBeanServerConnection beanServerConn) {
+    /**
+     * This method generates a heap dump into the file directory we have configured in the
+     * EI_Monitor_Configuration.properties file.
+     * Generated file is in .hprof type.
+     * @param number Heap dump number
+     */
+    public static void getHeapDump(int number) {
 
-        String hotSpotBeanName = "com.sun.management:type=HotSpotDiagnostic";
-        String fileName = "HeapDump-"+number+".hprof";
+        String fileName = "Heap Dump-" + number + ".hprof";
+        String dumpFile = HEAP_DUMP_FILE_DIRECTORY + "/" + fileName;
 
-        boolean live = true;
+        try {
+            final String hotspotBeanName = "com.sun.management:type=HotSpotDiagnostic";
+            MBeanServer server = ManagementFactory.getPlatformMBeanServer();
+            HotSpotDiagnosticMXBean hotSpotDiagnosticMXBean = ManagementFactory.newPlatformMXBeanProxy(server,
+                    hotspotBeanName, HotSpotDiagnosticMXBean.class);
 
-        if (beanServerConn != null) {
-            Class clazz = null;
-            String dumpFile = HEAP_DUMP_FILE_DIRECTORY + "/" + fileName;
-            try {
-                clazz = Class.forName("com.sun.management.HotSpotDiagnosticMXBean");
-                Object hotSpotMBean = ManagementFactory.newPlatformMXBeanProxy(beanServerConn, hotSpotBeanName, clazz);
-                Method method = clazz.getMethod("dumpHeap", new Class[]{String.class, boolean.class});
-                method.setAccessible(true);
-                method.invoke(hotSpotMBean, new Object[]{dumpFile, new Boolean(live)});
-                LOGGER.info("Heap Dump is generated !!!");
-            } catch (Exception e) {
-                LOGGER.error("Heap dump generation failed !!! " + e.getMessage());
-            } finally {
-                clazz = null;
-            }
+            hotSpotDiagnosticMXBean.dumpHeap(dumpFile,true);
+
+        } catch (IOException e) {
+            LOGGER.error("Heap Dump Generation failed !!!" + e.getMessage());
         }
     }
 }

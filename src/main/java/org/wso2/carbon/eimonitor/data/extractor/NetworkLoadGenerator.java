@@ -18,47 +18,50 @@ package org.wso2.carbon.eimonitor.data.extractor;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import javax.management.MBeanServerConnection;
-import javax.management.ObjectName;
+
+import javax.management.*;
 import java.io.*;
 import java.util.Calendar;
-import static org.wso2.carbon.eimonitor.Activator.*;
+import static org.wso2.carbon.eimonitor.configurations.configuredvalues.DirectoryNames.*;
 
 public class NetworkLoadGenerator {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static void getNetworkLoad(MBeanServerConnection beanServerConnection){
+    public static void getNetworkLoad(MBeanServerConnection beanServerConnection) {
         try {
-            //for JMX connections
-            ObjectName sendAttributeName = new ObjectName("org.apache.synapse:Type=Transport,Name=passthru-http-sender");
-            Object senderMessagesSent = beanServerConnection.getAttribute(sendAttributeName, "MessagesSent");
-            Object senderMessagesReceived = beanServerConnection.getAttribute(sendAttributeName, "MessagesReceived");
-            Object senderBytesSent = beanServerConnection.getAttribute(sendAttributeName, "BytesSent");
-            Object senderBytesReceived = beanServerConnection.getAttribute(sendAttributeName, "BytesReceived");
+            ObjectName sndAttrName = new ObjectName("org.apache.synapse:Type=Transport,Name=passthru-http-sender");
+            Object sndMsgsSent = beanServerConnection.getAttribute(sndAttrName, "MessagesSent");
+            Object sndMsgsReceived = beanServerConnection.getAttribute(sndAttrName, "MessagesReceived");
+            Object sndBytesSent = beanServerConnection.getAttribute(sndAttrName, "BytesSent");
+            Object sndBytesReceived = beanServerConnection.getAttribute(sndAttrName, "BytesReceived");
 
-            ObjectName receivedAttributeName = new ObjectName("org.apache.synapse:Type=Transport,Name=passthru-http-receiver");
-            Object receiverMessagesSent = beanServerConnection.getAttribute(receivedAttributeName, "MessagesSent");
-            Object receiverMessagesReceived = beanServerConnection.getAttribute(receivedAttributeName, "MessagesReceived");
-            Object receiverBytesSent = beanServerConnection.getAttribute(receivedAttributeName, "BytesSent");
-            Object receiverBytesReceived = beanServerConnection.getAttribute(receivedAttributeName, "BytesReceived");
+            ObjectName rcvAttrName = new ObjectName("org.apache.synapse:Type=Transport,Name=passthru-http-receiver");
+            Object rcvMsgsSent = beanServerConnection.getAttribute(rcvAttrName, "MessagesSent");
+            Object rcvMsgsReceived = beanServerConnection.getAttribute(rcvAttrName, "MessagesReceived");
+            Object rcvBytesSent = beanServerConnection.getAttribute(rcvAttrName, "BytesSent");
+            Object rcvBytesReceived = beanServerConnection.getAttribute(rcvAttrName, "BytesReceived");
 
-            String senderNetworkLoad = "Sender : MessagesSent=" + senderMessagesSent.toString() + " ,MessagesReceived=" +
-                        senderMessagesReceived.toString() + " ,BytesSent=" + senderBytesSent + " ,BytesReceived=" + senderBytesReceived;
-            String receiverNetworkLoad = "Receiver : MessagesSent=" + receiverMessagesSent.toString() + " ,MessagesReceived=" +
-                        receiverMessagesReceived.toString() + " ,BytesSent=" + receiverBytesSent + " ,BytesReceived=" + receiverBytesReceived;
+            String senderNetworkLoad = "MessagesSent=" + sndMsgsSent + " ,MessagesReceived=" +
+                        sndMsgsReceived + " ,BytesSent=" + sndBytesSent + " ,BytesReceived=" + sndBytesReceived;
+            String receiverNetworkLoad = "MessagesSent=" + rcvMsgsSent + " ,MessagesReceived=" +
+                        rcvMsgsReceived + " ,BytesSent=" + rcvBytesSent + " ,BytesReceived=" + rcvBytesReceived;
 
             //writing the network load into a text file
-            networkLoadWriter(Calendar.getInstance().getTime() + "  " + senderNetworkLoad, NETWORK_LOAD_FILE_DIRECTORY +"/"+ NETWORK_LOAD_FILE_NAME);
-            networkLoadWriter(Calendar.getInstance().getTime() + "  " + receiverNetworkLoad, NETWORK_LOAD_FILE_DIRECTORY +"/"+ NETWORK_LOAD_FILE_NAME);
+            networkLoadWriter(Calendar.getInstance().getTime() + "  Sender : " + senderNetworkLoad,
+                    NETWORK_LOAD_FILE);
+            networkLoadWriter(Calendar.getInstance().getTime() + "  Receiver : " + receiverNetworkLoad,
+                    NETWORK_LOAD_FILE);
 
             LOGGER.info("Network Load file is generated !!!");
 
-        }catch (Exception e){
+        } catch (MalformedObjectNameException | ReflectionException | IOException | InstanceNotFoundException |
+                MBeanException | AttributeNotFoundException e){
             LOGGER.error("Network Load file generation failed !!! " + e.getMessage());
         }
     }
-    private static void networkLoadWriter(String networkLoad,String fileName){
+
+    private static void networkLoadWriter(String networkLoad, String fileName){
 
         try {
             FileWriter outputStream = new FileWriter(fileName,true);

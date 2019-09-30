@@ -43,8 +43,8 @@ Many options can be customized through changing values in **configurations.prope
 5)MONITORING_TIME_PERIOD = set the period value to monitor the EI. Value is taken in milliseconds.
                 (E.g. : **MONITORING_TIME_PERIOD=1000** Monitor the EI for every second)
 6)DATA_EXTRACTING_TIME_PERIOD = set the period value to extract data. Value is taken in milliseconds.
-                (E.g. : **DATA_EXTRACTING_TIME_PERIOD=1000** Extract the data for every second when there is an incident which has occured)
+                (E.g. : **DATA_EXTRACTING_TIME_PERIOD=1000** Extract the data for every second when there is an incident which has occured) 
 7)DATA_EXTRACTING_COUNT_THRESHOLD = set the threshold value to identify the incident is a real issue or not.
-                (E.g. : **DATA_EXTRACTING_COUNT_THRESHOLD=50** will monitor the EI for 50 times and identify the incident which has occured is a real issue or not)
+                (E.g. : **DATA_EXTRACTING_COUNT_THRESHOLD=50** will monitor the EI for 50 times and identify the incident which has occured is a real issue or not) 
 8)BASE_DIRECTORY = set the directory path to store the the data extracted by the Data Extractor.
-                (E.g. : **BASE_DIRECTORY=/home/nipuna/Desktop** Data will be saved in the /home/nipuna/Desktop directory in a folder named **Data**)
+                (E.g. : **BASE_DIRECTORY=/home/nipuna/Desktop** Data will be saved in the /home/nipuna/Desktop directory in a folder named **Data**) 

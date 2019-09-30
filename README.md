@@ -39,20 +39,20 @@ Go to the **<EI_HOME>/bin** directory and run the following command line on the 
 
 Many options can be customized through changing values in **configurations.properties** file.
     
-1)HEAP_RATIO_THRESHOLD = set the threshold value for ratio of heap memory to identify as an incident.
-(E.g. : **HEAP_RATIO_THRESHOLD=0.5** EI Monitor will catch an incident when heap memory ratio goes over 0.5)
-2)CPU_RATIO_THRESHOLD = set the threshold value for ratio of CPU memory to identify as an incident.
-3)LOAD_AVERAGE_THRESHOLD = set the threshold value for system load average to identify as an incident.
-4)BLOCKED_TIME_THRESHOLD = set the threshold value for average maximum blocked time in threads to identify as an 
-incident.
-5)MONITORING_TIME_PERIOD = set the period value to monitor the EI. Value is taken in milliseconds.
-(E.g. : **MONITORING_TIME_PERIOD=1000** Monitor the EI for every second)
-6)DATA_EXTRACTING_TIME_PERIOD = set the period value to extract data. Value is taken in milliseconds.
-(E.g. : **DATA_EXTRACTING_TIME_PERIOD=1000** Extract the data for every second when there is an incident which has 
-occurred)
-7)DATA_EXTRACTING_COUNT_THRESHOLD = set the threshold value to identify the incident is a real issue or not.
-(E.g. : **DATA_EXTRACTING_COUNT_THRESHOLD=50** will monitor the EI for 50 times and identify the incident which has 
-occurred is a real issue or not)
-8)BASE_DIRECTORY = set the directory path to store the the data extracted by the Data Extractor.
-(E.g. : **BASE_DIRECTORY=/home/nipuna/Desktop** Data will be saved in the /home/nipuna/Desktop directory in a folder 
-named **Data**)
+    1)HEAP_RATIO_THRESHOLD = set the threshold value for ratio of heap memory to identify as an incident.
+    (E.g. : **HEAP_RATIO_THRESHOLD=0.5** EI Monitor will catch an incident when heap memory ratio goes over 0.5)
+    2)CPU_RATIO_THRESHOLD = set the threshold value for ratio of CPU memory to identify as an incident.
+    3)LOAD_AVERAGE_THRESHOLD = set the threshold value for system load average to identify as an incident.
+    4)BLOCKED_TIME_THRESHOLD = set the threshold value for average maximum blocked time in threads to identify as an 
+    incident.
+    5)MONITORING_TIME_PERIOD = set the period value to monitor the EI. Value is taken in milliseconds.
+    (E.g. : **MONITORING_TIME_PERIOD=1000** Monitor the EI for every second)
+    6)DATA_EXTRACTING_TIME_PERIOD = set the period value to extract data. Value is taken in milliseconds.
+    (E.g. : **DATA_EXTRACTING_TIME_PERIOD=1000** Extract the data for every second when there is an incident which has 
+    occurred)
+    7)DATA_EXTRACTING_COUNT_THRESHOLD = set the threshold value to identify the incident is a real issue or not.
+    (E.g. : **DATA_EXTRACTING_COUNT_THRESHOLD=50** will monitor the EI for 50 times and identify the incident which has 
+    occurred is a real issue or not)
+    8)BASE_DIRECTORY = set the directory path to store the the data extracted by the Data Extractor.
+    (E.g. : **BASE_DIRECTORY=/home/nipuna/Desktop** Data will be saved in the /home/nipuna/Desktop directory in a folder 
+    named **Data**)

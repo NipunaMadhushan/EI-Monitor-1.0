@@ -16,16 +16,15 @@
 
 package org.wso2.carbon.eimonitor;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.eimonitor.configurations.configuredvalues.DirectoryNames;
 import java.io.File;
 import java.io.IOException;
 
-import static org.wso2.carbon.eimonitor.configurations.configuredvalues.DirectoryNames.*;
-
 public class FileGenerator {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Log log = LogFactory.getLog(FileGenerator.class);
 
     /**
      * This method generates a new directory in a given file directory.
@@ -34,7 +33,7 @@ public class FileGenerator {
      * @param baseDirectory Directory path where the user want to to create the new directory
      * @param directoryName Name of the directory which the user is going to create
      */
-    public static void generateDirectory(String baseDirectory, String directoryName) {
+    public void generateDirectory(String baseDirectory, String directoryName) {
         File file = new File(baseDirectory + "/" + directoryName);
         file.mkdir();
     }
@@ -46,24 +45,27 @@ public class FileGenerator {
      * @param directory Directory path where the user want to create new text file
      * @param filename Name of the text file which the user is going to create
      */
-    public static void generateTextFile(String directory, String filename) {
+    public void generateTextFile(String directory, String filename) {
         try {
             String fileDirectory = directory + "/" + filename;
             File file = new File(fileDirectory);
             file.createNewFile();
         } catch (IOException e) {
-            LOGGER.error("File Generation failed!!! " + e.getMessage());
+            log.error("File Generation failed!!! " + e.getMessage());
         }
     }
 
     /**
      * This method generates all the file directories related to the EI_Monitor
      */
-    public static void generateAllDirectories() {
-        FileGenerator.generateDirectory(BASE_DIRECTORY,"Data");
-        FileGenerator.generateDirectory(BASE_DIRECTORY + "/Data","Heap Dumps");
-        FileGenerator.generateDirectory(BASE_DIRECTORY + "/Data","Thread Dumps");
-        FileGenerator.generateDirectory(BASE_DIRECTORY + "/Data","Network Load");
-        FileGenerator.generateTextFile(NETWORK_LOAD_FILE_DIRECTORY, NETWORK_LOAD_FILE_NAME);
+    public void generateAllDirectories() {
+        DirectoryNames directoryNames = new DirectoryNames();
+        String baseDirectory = directoryNames.BASE_DIRECTORY;
+        FileGenerator fileGenerator = new FileGenerator();
+        fileGenerator.generateDirectory(baseDirectory,"Data");
+        fileGenerator.generateDirectory(baseDirectory + "/Data","Heap Dumps");
+        fileGenerator.generateDirectory(baseDirectory + "/Data","Thread Dumps");
+        fileGenerator.generateDirectory(baseDirectory + "/Data","Network Load");
+        fileGenerator.generateTextFile(directoryNames.NETWORK_LOAD_FILE_DIRECTORY, directoryNames.NETWORK_LOAD_FILE_NAME);
     }
 }

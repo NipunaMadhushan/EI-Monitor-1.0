@@ -16,19 +16,20 @@
 
 package org.wso2.carbon.eimonitor.data.extractor;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.eimonitor.configurations.configuredvalues.DirectoryNames;
 import javax.management.*;
 import java.io.*;
 import java.util.Calendar;
-import static org.wso2.carbon.eimonitor.configurations.configuredvalues.DirectoryNames.*;
 
 public class NetworkLoadGenerator {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Log log = LogFactory.getLog(NetworkLoadGenerator.class);
 
-    public static void getNetworkLoad(MBeanServerConnection beanServerConnection) {
+    public void getNetworkLoad(MBeanServerConnection beanServerConnection) {
+        DirectoryNames directoryNames = new DirectoryNames();
+        final String networkLoadFile = directoryNames.NETWORK_LOAD_FILE;
         try {
             ObjectName sndAttrName = new ObjectName("org.apache.synapse:Type=Transport,Name=passthru-http-sender");
             Object sndMsgsSent = beanServerConnection.getAttribute(sndAttrName, "MessagesSent");
@@ -49,19 +50,19 @@ public class NetworkLoadGenerator {
 
             //writing the network load into a text file
             networkLoadWriter(Calendar.getInstance().getTime() + "  Sender : " + senderNetworkLoad,
-                    NETWORK_LOAD_FILE);
+                    networkLoadFile);
             networkLoadWriter(Calendar.getInstance().getTime() + "  Receiver : " + receiverNetworkLoad,
-                    NETWORK_LOAD_FILE);
+                    networkLoadFile);
 
-            LOGGER.info("Network Load file is generated !!!");
+            log.info("Network Load file is generated !!!");
 
         } catch (MalformedObjectNameException | ReflectionException | IOException | InstanceNotFoundException |
                 MBeanException | AttributeNotFoundException e){
-            LOGGER.error("Network Load file generation failed !!! " + e.getMessage());
+            log.error("Network Load file generation failed !!! " + e.getMessage());
         }
     }
 
-    private static void networkLoadWriter(String networkLoad, String fileName){
+    private void networkLoadWriter(String networkLoad, String fileName){
 
         try {
             FileWriter outputStream = new FileWriter(fileName,true);
@@ -70,7 +71,7 @@ public class NetworkLoadGenerator {
             outputStream.close();
 
         } catch (Exception e) {
-            LOGGER.error("Network Load file generation failed !!! " + e.getMessage());
+            log.error("Network Load file generation failed !!! " + e.getMessage());
         }
     }
 }

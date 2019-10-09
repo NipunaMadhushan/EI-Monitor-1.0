@@ -16,8 +16,8 @@
 
 package org.wso2.carbon.eimonitor;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import javax.management.MBeanServerConnection;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
@@ -27,31 +27,32 @@ import java.util.Map;
 
 public class JMXConnection {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Log log = LogFactory.getLog(JMXConnection.class);
 
-    private static final String HOST = "localhost";
-    private static final String SERVER_PORT = "11111";
-    private static final String REGISTRY_PORT = "9999";
-    private static final String URL_STRING = "service:jmx:rmi://" + HOST + ":" + SERVER_PORT + "/jndi/rmi://" + HOST + ":" + REGISTRY_PORT + "/jmxrmi";
+    private final String URL_STRING = "service:jmx:rmi://localhost:11111/jndi/rmi://localhost:9999/jmxrmi";
 
-    public static MBeanServerConnection getJMXConnection() {
+    /**
+     * This method returns the JMX connection for the WSO2 EI server
+     * @return JMX connection
+     */
+    public MBeanServerConnection getJMXConnection() {
 
         MBeanServerConnection mbeanServerConnection = null;
 
         try {
             JMXServiceURL url = new JMXServiceURL(URL_STRING);
 
-            //passing credentials for password
+            //Pass credentials for password
             Map<String, String[]> env = new HashMap<>();
             String[] credentials = {"admin", "admin"};
             env.put(JMXConnector.CREDENTIALS, credentials);
 
             JMXConnector jmxConnector = JMXConnectorFactory.connect(url,env);
             mbeanServerConnection = jmxConnector.getMBeanServerConnection();
-            LOGGER.info("Successfully connected to the URL :- " + URL_STRING);
+            log.info("Successfully connected to the URL :- " + URL_STRING);
 
         } catch (Exception e) {
-            LOGGER.error("JMX Connection Failed !!! " + e.getMessage());
+            log.error("JMX Connection Failed !!! " + e.getMessage());
         }
         return mbeanServerConnection;
     }

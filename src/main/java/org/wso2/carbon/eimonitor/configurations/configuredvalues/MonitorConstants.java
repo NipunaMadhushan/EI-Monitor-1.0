@@ -23,5 +23,6 @@ import java.util.Objects;
  * This class provides the configurable constants related to the Monitor.
  */
 public class MonitorConstants {
-    public static final int MONITORING_TIME_PERIOD = Integer.parseInt(Objects.requireNonNull(Configurations.getProperty("MONITORING_TIME_PERIOD")));
+    private Configurations configurations = new Configurations();
+    public final int MONITORING_TIME_PERIOD = Integer.parseInt(Objects.requireNonNull(configurations.getProperty("MONITORING_TIME_PERIOD")));
 }

@@ -17,12 +17,15 @@
 package org.wso2.carbon.eimonitor.configurations.configuredvalues;
 
 import org.wso2.carbon.eimonitor.configurations.Configurations;
+
+import java.util.Collections;
 import java.util.Objects;
 
 /**
  * This class provides the configurable threshold values for Data Extractor.
  */
 public class DataExtractThresholdValues {
-    public static final int DATA_EXTRACTING_TIME_PERIOD = Integer.parseInt(Objects.requireNonNull(Configurations.getProperty("DATA_EXTRACTING_TIME_PERIOD")));
-    public static final int DATA_EXTRACTING_COUNT_THRESHOLD = Integer.parseInt(Objects.requireNonNull(Configurations.getProperty("DATA_EXTRACTING_COUNT_THRESHOLD")));
+    private Configurations configurations = new Configurations();
+    public final int DATA_EXTRACTING_TIME_PERIOD = Integer.parseInt(Objects.requireNonNull(configurations.getProperty("DATA_EXTRACTING_TIME_PERIOD")));
+    public final int DATA_EXTRACTING_COUNT_THRESHOLD = Integer.parseInt(Objects.requireNonNull(configurations.getProperty("DATA_EXTRACTING_COUNT_THRESHOLD")));
 }

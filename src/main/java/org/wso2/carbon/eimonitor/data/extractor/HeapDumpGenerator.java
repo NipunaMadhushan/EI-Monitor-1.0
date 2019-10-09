@@ -17,16 +17,16 @@
 package org.wso2.carbon.eimonitor.data.extractor;
 
 import com.sun.management.HotSpotDiagnosticMXBean;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.eimonitor.configurations.configuredvalues.DirectoryNames;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import javax.management.MBeanServer;
-import static org.wso2.carbon.eimonitor.configurations.configuredvalues.DirectoryNames.HEAP_DUMP_FILE_DIRECTORY;
 
 public class HeapDumpGenerator {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Log log = LogFactory.getLog(HeapDumpGenerator.class);
 
     /**
      * This method generates a heap dump into the file directory we have configured in the
@@ -34,13 +34,14 @@ public class HeapDumpGenerator {
      * Generated file is in .hprof type.
      * @param number Heap dump number
      */
-    public static void getHeapDump(int number) {
-
+    public void getHeapDump(int number) {
         String fileName = "Heap Dump-" + number + ".hprof";
-        String dumpFile = HEAP_DUMP_FILE_DIRECTORY + "/" + fileName;
+        DirectoryNames directoryNames = new DirectoryNames();
+        final String heapDumpFileDirectory = directoryNames.HEAP_DUMP_FILE_DIRECTORY;
+        String dumpFile = heapDumpFileDirectory + "/" + fileName;
 
         try {
-            final String hotspotBeanName = "com.sun.management:type=HotSpotDiagnostic";
+            String hotspotBeanName = "com.sun.management:type=HotSpotDiagnostic";
             MBeanServer server = ManagementFactory.getPlatformMBeanServer();
             HotSpotDiagnosticMXBean hotSpotDiagnosticMXBean = ManagementFactory.newPlatformMXBeanProxy(server,
                     hotspotBeanName, HotSpotDiagnosticMXBean.class);
@@ -48,7 +49,7 @@ public class HeapDumpGenerator {
             hotSpotDiagnosticMXBean.dumpHeap(dumpFile,true);
 
         } catch (IOException e) {
-            LOGGER.error("Heap Dump Generation failed !!!" + e.getMessage());
+            log.error("Heap Dump Generation failed !!!" + e.getMessage());
         }
     }
 }

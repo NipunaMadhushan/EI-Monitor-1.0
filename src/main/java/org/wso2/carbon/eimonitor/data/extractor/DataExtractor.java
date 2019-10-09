@@ -23,8 +23,10 @@ public class DataExtractor {
     /**
      * This method stores the data of heap dump generator,thread dump generator and the network load generator.
      */
-    public static void storeData() {
-        HeapDumpGenerator.getHeapDump(dataExtractCount);
-        ThreadDumpGenerator.getThreadDump(dataExtractCount);
+    public void storeData() {
+        HeapDumpGenerator heapDumpGenerator = new HeapDumpGenerator();
+        heapDumpGenerator.getHeapDump(dataExtractCount);
+        ThreadDumpGenerator threadDumpGenerator = new ThreadDumpGenerator();
+        threadDumpGenerator.getThreadDump(dataExtractCount);
     }
 }

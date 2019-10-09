@@ -28,15 +28,15 @@ public class ThreadStatus {
      * @return maxBlockedTime as an integer
      */
 
-    public static int getThreadStatusDetails() {
-        //getting the thread information or all threads
+    public int getThreadStatusDetails() {
+        //Get the thread information or all threads
         ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
         threadMXBean.setThreadContentionMonitoringEnabled(true);
         ThreadInfo[] threadInfos = threadMXBean.getThreadInfo(threadMXBean.getAllThreadIds(), 1000);
 
         int maxBlockedTime = 0;
 
-        //finding the maximum blocked time among the threads
+        //Find the maximum blocked time among the threads
         for (ThreadInfo threadInfo : threadInfos) {
             Object blockedTime = threadInfo.getBlockedTime();
 

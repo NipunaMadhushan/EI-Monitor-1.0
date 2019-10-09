@@ -24,8 +24,8 @@ import java.util.Properties;
 
 public class Configurations {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-    private static final String BASE_DIRECTORY = System.getProperty("user.dir");
+    private static final Logger logger = LogManager.getLogger();
+    private final String BASE_DIRECTORY = System.getProperty("user.dir");
 
     /**
      * This method returns the value of the property which has been configured in the
@@ -34,10 +34,10 @@ public class Configurations {
      * @param property Property name in the EI_Monitor_Configurations.properties which we need
      * @return propertyValue of the property we want to return
      */
-    public static String getProperty(String property) {
+    public String getProperty(String property) {
         try {
             Properties properties = new Properties();
-            String fileName = BASE_DIRECTORY + "/conf/EI_Monitor_Configurations.properties";
+            String fileName = BASE_DIRECTORY + "/conf/EI-Monitor-Configurations.properties";
             FileInputStream file = new FileInputStream(fileName);
             properties.load(file);
             String propertyValue = properties.getProperty(property);
@@ -45,7 +45,7 @@ public class Configurations {
             return propertyValue;
 
         } catch (IOException e) {
-            LOGGER.error("Failed to read configurations !!! " + e.getMessage());
+            logger.error("Failed to read configurations !!! " + e.getMessage());
         }
         return null;
     }

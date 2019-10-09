@@ -17,8 +17,8 @@
 package org.wso2.carbon.eimonitor;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,19 +28,19 @@ import java.util.stream.Stream;
 
 public class FileCleaner {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Log log = LogFactory.getLog(FileCleaner.class);
 
     /**
      * This method deletes all the files in a given file location but not the directory.
      * Folder will remain as an empty folder.
      * @param fileLocation File location where the files should be deleted
      */
-    public static void cleanFiles(String fileLocation) {
+    public void cleanFiles(String fileLocation) {
         try {
             final Stream<Path> walk = Files.walk(Paths.get(fileLocation));
             walk.filter(Files::isRegularFile).map(Path::toFile).forEach(File::delete);
         } catch (IOException e) {
-            LOGGER.error("Failed to clean the files !!! " + e.getMessage());
+            log.error("Failed to clean the files !!! " + e.getMessage());
         }
     }
 
@@ -48,11 +48,11 @@ public class FileCleaner {
      * This method deletes the whole directory including the sub folders and the files inside the directory.
      * @param directory Directory which should be deleted
      */
-    public static void cleanDirectory(String directory) {
+    public void cleanDirectory(String directory) {
         try {
             FileUtils.deleteDirectory(new File(directory));
         } catch (IOException e) {
-            LOGGER.error("Failed to delete the directory " + directory + e.getMessage());
+            log.error("Failed to delete the directory " + directory + e.getMessage());
         }
     }
 }

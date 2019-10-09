@@ -23,10 +23,12 @@ import java.util.Objects;
  * This class provides configurable directory names to store the data provided by the Data Extractor.
  */
 public class DirectoryNames {
-    public static final String BASE_DIRECTORY = Objects.requireNonNull(Configurations.getProperty("BASE_DIRECTORY"));
-    public static final String HEAP_DUMP_FILE_DIRECTORY = BASE_DIRECTORY + "/Data/Heap Dumps";
-    public static final String THREAD_DUMP_FILE_DIRECTORY = BASE_DIRECTORY + "/Data/Thread Dumps";
-    public static final String NETWORK_LOAD_FILE_DIRECTORY = BASE_DIRECTORY + "/Data/Network Load";
-    public static final String NETWORK_LOAD_FILE_NAME = "networkLoad.txt";
-    public static final String NETWORK_LOAD_FILE = NETWORK_LOAD_FILE_DIRECTORY + "/" + NETWORK_LOAD_FILE_NAME;
+    private Configurations configurations = new Configurations();
+
+    public final String BASE_DIRECTORY = Objects.requireNonNull(configurations.getProperty("BASE_DIRECTORY"));
+    public final String HEAP_DUMP_FILE_DIRECTORY = BASE_DIRECTORY + "/Data/Heap Dumps";
+    public final String THREAD_DUMP_FILE_DIRECTORY = BASE_DIRECTORY + "/Data/Thread Dumps";
+    public final String NETWORK_LOAD_FILE_DIRECTORY = BASE_DIRECTORY + "/Data/Network Load";
+    public final String NETWORK_LOAD_FILE_NAME = "networkLoad.txt";
+    public final String NETWORK_LOAD_FILE = NETWORK_LOAD_FILE_DIRECTORY + "/" + NETWORK_LOAD_FILE_NAME;
 }

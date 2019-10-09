@@ -25,10 +25,10 @@ public class CPUMemory {
      * This method returns the CPU Memory Usage as a ratio of used CPU memory to total CPU memory at an instance time.
      * @return cpuUsage as a float
      */
-    public static float getCPUMemoryUsage() {
+    public float getCPUMemoryUsage() {
         OperatingSystemMXBean operatingSystemMXBean =
                 (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
-        //calculating the CPU memory ratio
+        //Calculate the CPU memory ratio
         long totalMemory = operatingSystemMXBean.getTotalPhysicalMemorySize();
         long freeMemory = operatingSystemMXBean.getFreePhysicalMemorySize();
         float cpuUsage = (float)freeMemory / (float)totalMemory;

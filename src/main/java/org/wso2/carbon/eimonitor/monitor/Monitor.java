@@ -29,18 +29,18 @@ public class Monitor {
      *      2)CPU Memory Ratio
      *      3)System Load Average
      *      4)Average Maximum Blocked Time
-     * @return all the monitored features as floats inside a List.
-     */
-    public static List<Float> getMonitorDetails() {
-        //monitoring the WSO2 EI server
+     * @return All the monitored features as floats inside a List.
+    */
+    public List<Float> getMonitorDetails() {
+        //Monitor the WSO2 EI server
         long currentTime = System.currentTimeMillis();
-        float heapMemoryRatio = HeapMemory.getHeapMemoryUsage();
-        float cpuMemoryRatio = CPUMemory.getCPUMemoryUsage();
-        float systemLoadAverage = (float)LoadAverage.getSystemLoadAverage();
-        int maxBlockedTime = ThreadStatus.getThreadStatusDetails();
+        float heapMemoryRatio = new HeapMemory().getHeapMemoryUsage();
+        float cpuMemoryRatio = new CPUMemory().getCPUMemoryUsage();
+        float systemLoadAverage = (float) new LoadAverage().getSystemLoadAverage();
+        int maxBlockedTime = new ThreadStatus().getThreadStatusDetails();
         float averageMaxBlockedTime = (float)maxBlockedTime / (float)(currentTime - START_TIME);
 
-        //adding the monitor values to a list
+        //Add the monitor values to a list
         List<Float> monitorValues = new ArrayList<>();
         monitorValues.add(heapMemoryRatio);
         monitorValues.add(cpuMemoryRatio);

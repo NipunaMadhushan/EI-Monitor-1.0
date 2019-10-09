@@ -26,10 +26,10 @@ public class HeapMemory {
      *time.
      * @return heapMemoryRatio as a float
      */
-    public static float getHeapMemoryUsage() {
+    public float getHeapMemoryUsage() {
         MemoryMXBean memoryMXBeanProxy = ManagementFactory.getMemoryMXBean();
 
-        //calculating heap memory ratio
+        //Calculate heap memory ratio
         float usedHeapMemory = (float)memoryMXBeanProxy.getHeapMemoryUsage().getUsed();
         float committedHeapMemory = (float)memoryMXBeanProxy.getHeapMemoryUsage().getCommitted();
         float heapMemoryRatio = usedHeapMemory / committedHeapMemory;

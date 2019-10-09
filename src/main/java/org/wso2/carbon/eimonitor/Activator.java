@@ -16,72 +16,77 @@
 
 package org.wso2.carbon.eimonitor;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import org.wso2.carbon.eimonitor.configurations.configuredvalues.DirectoryNames;
+import org.wso2.carbon.eimonitor.configurations.configuredvalues.MonitorConstants;
 import org.wso2.carbon.eimonitor.incident.handler.IncidentHandler;
 import org.wso2.carbon.eimonitor.monitor.*;
 import java.util.*;
-import static org.wso2.carbon.eimonitor.configurations.configuredvalues.MonitorConstants.MONITORING_TIME_PERIOD;
-import static org.wso2.carbon.eimonitor.configurations.configuredvalues.DirectoryNames.*;
 
 public class Activator implements BundleActivator {
 
-    static BundleContext bundleContext;
+    private static BundleContext bundleContext;
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Log log = LogFactory.getLog(Activator.class);
     public static final long START_TIME = System.currentTimeMillis();
     public static boolean incidentHandlerState = false;
     public static int dataExtractCount = 0;
 
+    private DirectoryNames directoryNames = new DirectoryNames();
+    private FileCleaner fileCleaner = new FileCleaner();
+    private FileGenerator fileGenerator = new FileGenerator();
+    private IncidentHandler incidentHandler = new IncidentHandler();
+    private MonitorConstants monitorConstants = new MonitorConstants();
+
     /**
      * This method starts the bundle activator and the EI Monitor.
      * @param bundleContext is equal to the bundle contest of the class
-     * @throws Exception
+     * @throws InterruptedException
      */
-    public void start(BundleContext bundleContext) throws Exception {
+    public void start(BundleContext bundleContext) throws InterruptedException {
 
         Activator.bundleContext = bundleContext;
 
         Thread.sleep(20000);
 
         while (true) {
-            //cleaning the file directories of data
-            FileCleaner.cleanDirectory(BASE_DIRECTORY +"/Data");
-            //generating the file directories of data
-            FileGenerator.generateAllDirectories();
+            //Clean the file directories of data
+            fileCleaner.cleanDirectory(directoryNames.BASE_DIRECTORY +"/Data");
+            //Generate the file directories of data
+            fileGenerator.generateAllDirectories();
 
             dataExtractCount = 0;
-
-            //monitoring the WSO2 EI server and checking whether there is an incident is happening or not
+            //Monitor the WSO2 EI server and checking whether there is an incident is happening or not
             while (!incidentHandlerState) {
-                //getting monitor details
-                List<Float> monitorValues = Monitor.getMonitorDetails();
+                //Get monitor details
+                List<Float> monitorValues = new Monitor().getMonitorDetails();
 
-                LOGGER.info("Heap Memory Percentage : " + monitorValues.get(0) * 100 +
+                log.info("Heap Memory Percentage : " + monitorValues.get(0) * 100 +
                         "% , CPU Memory Percentage : " + monitorValues.get(1) * 100 + "% , Load Average : " +
                         monitorValues.get(2) + " , Average Maximum Blocked Time : " + monitorValues.get(3));
 
 
-                //check whether there is an incident is happening or not
-                incidentHandlerState = IncidentHandler.handleAll(monitorValues);
-                Thread.sleep(MONITORING_TIME_PERIOD);
+                //Check whether there is an incident is happening or not
+                incidentHandlerState = incidentHandler.handleAll(monitorValues);
+                Thread.sleep(monitorConstants.MONITORING_TIME_PERIOD);
             }
 
             if (incidentHandlerState) {
-                //check whether that the incident captured is a real issue or not
-                IncidentHandler.handleIncidentTimePeriod();
+                //Check whether that the incident captured is a real issue or not
+                incidentHandler.handleIncidentTimePeriod();
             }
         }
     }
 
     /**
-     * This methos stops the bundle activator and the EI Monitor.
+     * This method stops the bundle activator and the EI Monitor.
      * @param bundleContext is equal to null
-     * @throws Exception
+     * @throws InterruptedException
      */
-    public void stop(BundleContext bundleContext) throws Exception {
+    public void stop(BundleContext bundleContext) throws InterruptedException {
         Activator.bundleContext = null;
     }
 }

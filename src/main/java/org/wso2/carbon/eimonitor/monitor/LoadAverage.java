@@ -25,7 +25,7 @@ public class LoadAverage {
      *This method returns the System Load Average.
      * @return systemLoadAverage as a float
      */
-    public static double getSystemLoadAverage() {
+    public double getSystemLoadAverage() {
         OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
         Object systemLoadAverage = operatingSystemMXBean.getSystemLoadAverage();
 

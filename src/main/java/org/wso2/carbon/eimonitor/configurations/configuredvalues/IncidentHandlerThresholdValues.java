@@ -26,16 +26,17 @@ import java.util.Objects;
  * This class provides threshold values for Incident Handler to catch an incident.
  */
 public class IncidentHandlerThresholdValues {
-    public static final float HEAP_RATIO_THRESHOLD = Float.parseFloat(Objects.requireNonNull(Configurations.getProperty("HEAP_RATIO_THRESHOLD")));
-    public static final float CPU_RATIO_THRESHOLD = Float.parseFloat(Objects.requireNonNull(Configurations.getProperty("CPU_RATIO_THRESHOLD")));
-    public static final float LOAD_AVERAGE_THRESHOLD = Float.parseFloat(Objects.requireNonNull(Configurations.getProperty("LOAD_AVERAGE_THRESHOLD")));
-    public static final float BLOCK_TIME_THRESHOLD = Float.parseFloat(Objects.requireNonNull(Configurations.getProperty("BLOCKED_TIME_THRESHOLD")));
+    Configurations configurations = new Configurations();
+    public final float HEAP_RATIO_THRESHOLD = Float.parseFloat(Objects.requireNonNull(configurations.getProperty("HEAP_RATIO_THRESHOLD")));
+    public final float CPU_RATIO_THRESHOLD = Float.parseFloat(Objects.requireNonNull(configurations.getProperty("CPU_RATIO_THRESHOLD")));
+    public final float LOAD_AVERAGE_THRESHOLD = Float.parseFloat(Objects.requireNonNull(configurations.getProperty("LOAD_AVERAGE_THRESHOLD")));
+    public final float BLOCK_TIME_THRESHOLD = Float.parseFloat(Objects.requireNonNull(configurations.getProperty("BLOCKED_TIME_THRESHOLD")));
 
     /**
      * This method returns all the threshold values which are needed in the Incident Handler.
      * @return All the threshold values as a list of floats
      */
-    public static List<Float> getAllThresholdValues() {
+    public List<Float> getAllThresholdValues() {
         List<Float> thresholdValues = new ArrayList<>();
         thresholdValues.add(HEAP_RATIO_THRESHOLD);
         thresholdValues.add(CPU_RATIO_THRESHOLD);

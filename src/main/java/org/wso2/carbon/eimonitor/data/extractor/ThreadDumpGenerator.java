@@ -16,30 +16,30 @@
 
 package org.wso2.carbon.eimonitor.data.extractor;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.eimonitor.configurations.configuredvalues.DirectoryNames;
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
-import static org.wso2.carbon.eimonitor.configurations.configuredvalues.DirectoryNames.THREAD_DUMP_FILE_DIRECTORY;
 
 public class ThreadDumpGenerator {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Log log = LogFactory.getLog(ThreadDumpGenerator.class);
 
     /**
      * This method generates thread dump as string into a string builder.
      * @param number Thread dump number
      */
-    public static void getThreadDump(int number) {
+    public void getThreadDump(int number) {
         try {
-            //getting the thread details of each threads
+            //Get the thread details of each threads
             StringBuilder dump = new StringBuilder();
             ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
             ThreadInfo[] threadInfos = threadMXBean.getThreadInfo(threadMXBean.getAllThreadIds(),1000);
 
-            //writing the thread infos into the string builder to create thread dump
+            //Write the thread infos into the string builder to create thread dump
             for (ThreadInfo threadInfo : threadInfos) {
                 dump.append('"');
                 dump.append(threadInfo.getThreadName());
@@ -58,13 +58,13 @@ public class ThreadDumpGenerator {
 
                 dump.append("\n\n");
             }
-            //writing the thread dump into a text file
+            //Write the thread dump into a text file
             threadDumpWriter(number,dump.toString());
 
-            LOGGER.info("Thread Dump is generated !!!");
+            log.info("Thread Dump is generated !!!");
         }
         catch (Exception e){
-            LOGGER.error("Thread dump generation failed !!! " + e.getMessage());
+            log.error("Thread dump generation failed !!! " + e.getMessage());
         }
     }
 
@@ -74,9 +74,12 @@ public class ThreadDumpGenerator {
      * @param number Thread dump number
      * @param threadDump Generated thread dump as a string
      */
-    private static void threadDumpWriter(int number, String threadDump) {
+    private void threadDumpWriter(int number, String threadDump) {
+        DirectoryNames directoryNames = new DirectoryNames();
+        String threadDumpFileDirectory = directoryNames.THREAD_DUMP_FILE_DIRECTORY;
+
         String fileName = "ThreadDump-" + number + ".txt";
-        String dumpFile = THREAD_DUMP_FILE_DIRECTORY + "/" + fileName;
+        String dumpFile = threadDumpFileDirectory + "/" + fileName;
         try {
             PrintWriter outputStream = new PrintWriter(dumpFile);
             outputStream.println(threadDump);
@@ -84,7 +87,7 @@ public class ThreadDumpGenerator {
             outputStream.close();
         }
         catch (Exception e) {
-            LOGGER.error("Thread dump generation failed !!! " + e.getMessage());
+            log.error("Thread dump generation failed !!! " + e.getMessage());
         }
     }
 }

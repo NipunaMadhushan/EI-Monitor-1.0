@@ -19,7 +19,8 @@ package org.wso2.carbon.eimonitor.data.extractor;
 import com.sun.management.HotSpotDiagnosticMXBean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.eimonitor.configurations.configuredvalues.DirectoryNames;
+import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
+
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import javax.management.MBeanServer;
@@ -36,8 +37,7 @@ public class HeapDumpGenerator {
      */
     public void getHeapDump(int number) {
         String fileName = "Heap Dump-" + number + ".hprof";
-        DirectoryNames directoryNames = new DirectoryNames();
-        final String heapDumpFileDirectory = directoryNames.HEAP_DUMP_FILE_DIRECTORY;
+        final String heapDumpFileDirectory = Constants.DirectoryNames.HEAP_DUMP_FILE_DIRECTORY;
         String dumpFile = heapDumpFileDirectory + "/" + fileName;
 
         try {

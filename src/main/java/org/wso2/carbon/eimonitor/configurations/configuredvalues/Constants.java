@@ -1,0 +1,56 @@
+package org.wso2.carbon.eimonitor.configurations.configuredvalues;
+
+import org.wso2.carbon.eimonitor.configurations.Configurations;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+public final class Constants {
+    private static Configurations configurations = new Configurations();
+
+    public static final int MONITORING_TIME_PERIOD =
+            Integer.parseInt(Objects.requireNonNull(configurations.getProperty("MONITORING_TIME_PERIOD")));
+
+    public static class DataExtractThresholdValues {
+        public static final int DATA_EXTRACTING_TIME_PERIOD =
+                Integer.parseInt(Objects.requireNonNull(configurations.getProperty("DATA_EXTRACTING_TIME_PERIOD")));
+        public static final int DATA_EXTRACTING_COUNT_THRESHOLD =
+                Integer.parseInt(Objects.requireNonNull(configurations.getProperty("DATA_EXTRACTING_COUNT_THRESHOLD")));
+    }
+
+    public static class DirectoryNames {
+        public static final String BASE_DIRECTORY =
+                Objects.requireNonNull(configurations.getProperty("BASE_DIRECTORY"));
+        public static final String HEAP_DUMP_FILE_DIRECTORY = BASE_DIRECTORY + "/Data/Heap Dumps";
+        public static final String THREAD_DUMP_FILE_DIRECTORY = BASE_DIRECTORY + "/Data/Thread Dumps";
+        public static final String NETWORK_LOAD_FILE_DIRECTORY = BASE_DIRECTORY + "/Data/Network Load";
+        public static final String NETWORK_LOAD_FILE_NAME = "networkLoad.txt";
+        public static final String NETWORK_LOAD_FILE = NETWORK_LOAD_FILE_DIRECTORY + "/" + NETWORK_LOAD_FILE_NAME;
+    }
+
+    public static class IncidentHandlerThresholdValues {
+        public static final float HEAP_RATIO_THRESHOLD =
+                Float.parseFloat(Objects.requireNonNull(configurations.getProperty("HEAP_RATIO_THRESHOLD")));
+        public static final float CPU_RATIO_THRESHOLD =
+                Float.parseFloat(Objects.requireNonNull(configurations.getProperty("CPU_RATIO_THRESHOLD")));
+        public static final float LOAD_AVERAGE_THRESHOLD =
+                Float.parseFloat(Objects.requireNonNull(configurations.getProperty("LOAD_AVERAGE_THRESHOLD")));
+        public static final float BLOCK_TIME_THRESHOLD =
+                Float.parseFloat(Objects.requireNonNull(configurations.getProperty("BLOCKED_TIME_THRESHOLD")));
+
+        /**
+         * This method returns all the threshold values which are needed in the Incident Handler.
+         * @return All the threshold values as a list of floats
+         */
+        public static List<Float> getAllThresholdValues() {
+            List<Float> thresholdValues = new ArrayList<>();
+            thresholdValues.add(HEAP_RATIO_THRESHOLD);
+            thresholdValues.add(CPU_RATIO_THRESHOLD);
+            thresholdValues.add(LOAD_AVERAGE_THRESHOLD);
+            thresholdValues.add(BLOCK_TIME_THRESHOLD);
+
+            return thresholdValues;
+        }
+    }
+}

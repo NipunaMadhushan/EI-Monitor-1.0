@@ -17,18 +17,15 @@
 package org.wso2.carbon.eimonitor.incident.handler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.eimonitor.configurations.configuredvalues.DataExtractThresholdValues;
-import org.wso2.carbon.eimonitor.configurations.configuredvalues.IncidentHandlerThresholdValues;
+import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
 import org.wso2.carbon.eimonitor.data.extractor.DataExtractor;
 import org.wso2.carbon.eimonitor.monitor.*;
 import java.util.List;
-import static org.wso2.carbon.eimonitor.Activator.*;
+import static org.wso2.carbon.eimonitor.MainThread.*;
 
 public class IncidentHandler {
-
     private static final Log log = LogFactory.getLog(IncidentHandler.class);
-
-    private IncidentHandlerThresholdValues incidentHandlerThresholdValues = new IncidentHandlerThresholdValues();
+    private List<Float> thresholdValues = Constants.IncidentHandlerThresholdValues.getAllThresholdValues();
 
     /**
      * This method handles all the incidents given below which can occur in the EI server.
@@ -43,8 +40,6 @@ public class IncidentHandler {
      */
     public boolean handleAll(List<Float> monitorValues) {
         boolean state = false;
-
-        List<Float> thresholdValues = incidentHandlerThresholdValues.getAllThresholdValues();
 
         if (thresholdValues.size()== monitorValues.size()){
             for (int itemIndex = 0 ; itemIndex < thresholdValues.size() ; itemIndex++){
@@ -67,15 +62,11 @@ public class IncidentHandler {
      * monitored features.
      * Then it will compare the average values with the threshold values for monitoring and check whether the incident
      * captured is a real issue or not
-     * @throws InterruptedException
      */
-    public void handleIncidentTimePeriod() throws InterruptedException {
-
-        List<Float> thresholdValues = incidentHandlerThresholdValues.getAllThresholdValues();
-
-        DataExtractThresholdValues dataExtractThresholdValues = new DataExtractThresholdValues();
-        final int DATA_EXTRACTING_COUNT_THRESHOLD = dataExtractThresholdValues.DATA_EXTRACTING_COUNT_THRESHOLD;
-        final int DATA_EXTRACTING_TIME_PERIOD = dataExtractThresholdValues.DATA_EXTRACTING_TIME_PERIOD;
+    public boolean handleIncidentTimePeriod() {
+        final int DATA_EXTRACTING_COUNT_THRESHOLD =
+                Constants.DataExtractThresholdValues.DATA_EXTRACTING_COUNT_THRESHOLD;
+        final int DATA_EXTRACTING_TIME_PERIOD = Constants.DataExtractThresholdValues.DATA_EXTRACTING_TIME_PERIOD;
 
         float totalIncidentHeapMRatio = 0;
         float totalIncidentCpuMRatio = 0;
@@ -96,7 +87,11 @@ public class IncidentHandler {
             dataExtractCount += 1;
             DataExtractor dataExtractor = new DataExtractor();
             dataExtractor.storeData();
-            Thread.sleep(DATA_EXTRACTING_TIME_PERIOD);
+            try {
+                Thread.sleep(DATA_EXTRACTING_TIME_PERIOD);
+            } catch (InterruptedException e) {
+                log.error(e.getMessage());
+            }
         }
 
         //Take the average values of total monitoring values
@@ -106,19 +101,7 @@ public class IncidentHandler {
         float avgIncidentMaxBlockTime = totalIncidentMaxBlockTime / DATA_EXTRACTING_COUNT_THRESHOLD;
 
         //Check whether it is a real issue or not
-        if ((avgIncidentHeapMRatio > thresholdValues.get(0)) | (avgIncidentCpuMRatio > thresholdValues.get(1)) |
-                (avgIncidentLoadAverage > thresholdValues.get(2)) | (avgIncidentMaxBlockTime > thresholdValues.get(3)))
-        {
-            log.info("An issue has occurred in the system !!!");
-            while(true){
-                dataExtractCount += 1;
-                DataExtractor dataExtractor = new DataExtractor();
-                dataExtractor.storeData();
-            }
-        }
-        else {
-            log.info("Previous incident is not an issue !!!");
-            incidentHandlerState = false;
-        }
+        return (avgIncidentHeapMRatio > thresholdValues.get(0)) | (avgIncidentCpuMRatio > thresholdValues.get(1)) |
+                (avgIncidentLoadAverage > thresholdValues.get(2)) | (avgIncidentMaxBlockTime > thresholdValues.get(3));
     }
 }

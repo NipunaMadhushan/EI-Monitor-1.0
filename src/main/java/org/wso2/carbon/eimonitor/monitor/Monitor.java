@@ -18,7 +18,7 @@ package org.wso2.carbon.eimonitor.monitor;
 
 import java.util.ArrayList;
 import java.util.List;
-import static org.wso2.carbon.eimonitor.Activator.START_TIME;
+import static org.wso2.carbon.eimonitor.MainThread.START_TIME;
 
 public class Monitor {
 

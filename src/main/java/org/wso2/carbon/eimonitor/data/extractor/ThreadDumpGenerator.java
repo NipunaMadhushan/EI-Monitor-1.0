@@ -18,7 +18,8 @@ package org.wso2.carbon.eimonitor.data.extractor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.eimonitor.configurations.configuredvalues.DirectoryNames;
+import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
+
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
@@ -75,8 +76,8 @@ public class ThreadDumpGenerator {
      * @param threadDump Generated thread dump as a string
      */
     private void threadDumpWriter(int number, String threadDump) {
-        DirectoryNames directoryNames = new DirectoryNames();
-        String threadDumpFileDirectory = directoryNames.THREAD_DUMP_FILE_DIRECTORY;
+
+        String threadDumpFileDirectory = Constants.DirectoryNames.THREAD_DUMP_FILE_DIRECTORY;
 
         String fileName = "ThreadDump-" + number + ".txt";
         String dumpFile = threadDumpFileDirectory + "/" + fileName;

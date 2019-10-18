@@ -29,8 +29,6 @@ public class JMXConnection {
 
     private static final Log log = LogFactory.getLog(JMXConnection.class);
 
-    private final String URL_STRING = "service:jmx:rmi://localhost:11111/jndi/rmi://localhost:9999/jmxrmi";
-
     /**
      * This method returns the JMX connection for the WSO2 EI server
      * @return JMX connection
@@ -40,6 +38,7 @@ public class JMXConnection {
         MBeanServerConnection mbeanServerConnection = null;
 
         try {
+            String URL_STRING = "service:jmx:rmi://localhost:11111/jndi/rmi://localhost:9999/jmxrmi";
             JMXServiceURL url = new JMXServiceURL(URL_STRING);
 
             //Pass credentials for password

@@ -16,7 +16,7 @@
 
 package org.wso2.carbon.eimonitor.data.extractor;
 
-import static org.wso2.carbon.eimonitor.Activator.*;
+import static org.wso2.carbon.eimonitor.MainThread.*;
 
 public class DataExtractor {
 

@@ -21,6 +21,7 @@ import org.apache.commons.io.input.TailerListenerAdapter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.awaitility.Awaitility;
+import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -33,21 +34,20 @@ import java.util.concurrent.TimeUnit;
 class LogExtractor {
     private static final Log log = LogFactory.getLog(LogExtractor.class);
 
-    private Callable<Boolean> tailState = new Callable<Boolean>() {
-        @Override
-        public Boolean call() throws Exception {
-            return true;
-        }
-    };
+    private Callable<Boolean> tailState = () -> true;
     private CarbonLogTailer carbonLogTailer = new CarbonLogTailer();
     private int sleep = 500;
     private File carbonLogFile =
             new File("/home/nipuna/Desktop/wso2ei-6.5.0/repository/logs/wso2carbon.log");
     private Tailer tailer = Tailer.create(carbonLogFile, carbonLogTailer, sleep, true);
 
-    void logWriter(String logStream, String fileName) {
+    /**
+     * This method is used to write the log stream we created to a log file in a configurable file directory.
+     * @param logStream A string which contains the logs we want to write
+     */
+    void logWriter(String logStream) {
         try {
-            FileWriter outputStream = new FileWriter(fileName, true);
+            FileWriter outputStream = new FileWriter(Constants.DirectoryNames.LOG_FILE, true);
             outputStream.write(logStream);
             outputStream.write("\n");
             outputStream.close();
@@ -57,7 +57,7 @@ class LogExtractor {
         }
     }
 
-    void run() throws InterruptedException {
+    void run() {
         Awaitility.await().pollInterval(10, TimeUnit.MILLISECONDS).
                 atMost(5, TimeUnit.SECONDS).until(tailIsAlive());
     }
@@ -72,16 +72,13 @@ class LogExtractor {
 
     void stop() {
         tailer.stop();
-        tailState = new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return false;
-            }
-        };
+        tailState = () -> false;
     }
 
-
-    private static class CarbonLogTailer extends TailerListenerAdapter {
+    /**
+     * This class is used to build the string which contains the logs we need to write.
+     */
+    private class CarbonLogTailer extends TailerListenerAdapter {
         private StringBuilder stringBuilder;
 
         private CarbonLogTailer() {
@@ -107,10 +104,6 @@ class LogExtractor {
 
         String getCarbonLogs() {
             return stringBuilder.toString();
-        }
-
-        void clearLogs() {
-            this.stringBuilder = new StringBuilder();
         }
     }
 }

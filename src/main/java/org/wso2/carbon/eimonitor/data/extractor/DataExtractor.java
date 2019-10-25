@@ -39,7 +39,7 @@ public class DataExtractor {
         try {
             logExtractor.run();
             MainThread.sleep(Constants.DataExtractThresholdValues.DATA_EXTRACTING_TIME_PERIOD);
-            logExtractor.logWriter(logExtractor.getLogs(), "/home/nipuna/Desktop/Logs/carbon.log");
+            logExtractor.logWriter(logExtractor.getLogs());
             logExtractor.stop();
         } catch (InterruptedException e) {
             log.error(e.getMessage());

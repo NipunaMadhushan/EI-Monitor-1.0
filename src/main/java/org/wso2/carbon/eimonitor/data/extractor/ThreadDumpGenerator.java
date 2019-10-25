@@ -19,12 +19,14 @@ package org.wso2.carbon.eimonitor.data.extractor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
-
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 
+/**
+ * This class is used to generate thread dump as a text file.
+ */
 public class ThreadDumpGenerator {
 
     private static final Log log = LogFactory.getLog(ThreadDumpGenerator.class);
@@ -38,7 +40,7 @@ public class ThreadDumpGenerator {
             //Get the thread details of each threads
             StringBuilder dump = new StringBuilder();
             ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
-            ThreadInfo[] threadInfos = threadMXBean.getThreadInfo(threadMXBean.getAllThreadIds(),1000);
+            ThreadInfo[] threadInfos = threadMXBean.getThreadInfo(threadMXBean.getAllThreadIds(), 1000);
 
             //Write the thread infos into the string builder to create thread dump
             for (ThreadInfo threadInfo : threadInfos) {
@@ -60,11 +62,10 @@ public class ThreadDumpGenerator {
                 dump.append("\n\n");
             }
             //Write the thread dump into a text file
-            threadDumpWriter(number,dump.toString());
+            threadDumpWriter(number, dump.toString());
 
             log.info("Thread Dump is generated !!!");
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             log.error("Thread dump generation failed !!! " + e.getMessage());
         }
     }
@@ -86,8 +87,7 @@ public class ThreadDumpGenerator {
             outputStream.println(threadDump);
             outputStream.flush();
             outputStream.close();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Thread dump generation failed !!! " + e.getMessage());
         }
     }

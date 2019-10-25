@@ -19,6 +19,9 @@ package org.wso2.carbon.eimonitor.monitor;
 import com.sun.management.OperatingSystemMXBean;
 import java.lang.management.ManagementFactory;
 
+/**
+ * This class is used to read CPUMemory.
+ */
 public class CPUMemory {
 
     /**
@@ -31,7 +34,7 @@ public class CPUMemory {
         //Calculate the CPU memory ratio
         long totalMemory = operatingSystemMXBean.getTotalPhysicalMemorySize();
         long freeMemory = operatingSystemMXBean.getFreePhysicalMemorySize();
-        float cpuUsage = (float)freeMemory / (float)totalMemory;
+        float cpuUsage = (float) freeMemory / (float) totalMemory;
 
         return cpuUsage;
     }

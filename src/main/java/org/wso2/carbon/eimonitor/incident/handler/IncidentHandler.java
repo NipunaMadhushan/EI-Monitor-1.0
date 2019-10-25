@@ -15,14 +15,19 @@
  */
 
 package org.wso2.carbon.eimonitor.incident.handler;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
 import org.wso2.carbon.eimonitor.data.extractor.DataExtractor;
-import org.wso2.carbon.eimonitor.monitor.*;
+import org.wso2.carbon.eimonitor.monitor.Monitor;
+import static org.wso2.carbon.eimonitor.MainThread.dataExtractCount;
 import java.util.List;
-import static org.wso2.carbon.eimonitor.MainThread.*;
 
+/**
+ * This class is used to catch an Incident and handle another time period to check whether the incident is a real issue
+ * or not.
+ */
 public class IncidentHandler {
     private static final Log log = LogFactory.getLog(IncidentHandler.class);
     private List<Float> thresholdValues = Constants.IncidentHandlerThresholdValues.getAllThresholdValues();
@@ -41,16 +46,15 @@ public class IncidentHandler {
     public boolean handleAll(List<Float> monitorValues) {
         boolean state = false;
 
-        if (thresholdValues.size()== monitorValues.size()){
-            for (int itemIndex = 0 ; itemIndex < thresholdValues.size() ; itemIndex++){
-                if (monitorValues.get(itemIndex) > thresholdValues.get(itemIndex)){
+        if (thresholdValues.size() == monitorValues.size()) {
+            for (int itemIndex = 0; itemIndex < thresholdValues.size(); itemIndex++) {
+                if (monitorValues.get(itemIndex) > thresholdValues.get(itemIndex)) {
                     state = true;
                     break;
                 }
             }
             return state;
-        }
-        else {
+        } else {
             log.error("List sizes of threshold values and monitors are not equal !!!");
             return Boolean.parseBoolean(null);
         }
@@ -64,10 +68,6 @@ public class IncidentHandler {
      * captured is a real issue or not
      */
     public boolean handleIncidentTimePeriod() {
-        final int DATA_EXTRACTING_COUNT_THRESHOLD =
-                Constants.DataExtractThresholdValues.DATA_EXTRACTING_COUNT_THRESHOLD;
-        final int DATA_EXTRACTING_TIME_PERIOD = Constants.DataExtractThresholdValues.DATA_EXTRACTING_TIME_PERIOD;
-
         float totalIncidentHeapMRatio = 0;
         float totalIncidentCpuMRatio = 0;
         float totalIncidentLoadAverage = 0;
@@ -75,30 +75,29 @@ public class IncidentHandler {
 
         Monitor monitor = new Monitor();
         //Add the monitoring values for a configurable number of times
-        for (int dataExtractNumber = 0; dataExtractNumber < DATA_EXTRACTING_COUNT_THRESHOLD; dataExtractNumber++) {
+        for (int dataExtractNumber = 0;
+             dataExtractNumber < Constants.IncidentHandlerThresholdValues.INCIDENT_TIME_MONITORING_COUNT;
+             dataExtractNumber++) {
             List<Float> monitorValues = monitor.getMonitorDetails();
             totalIncidentHeapMRatio += monitorValues.get(0);
             totalIncidentCpuMRatio += monitorValues.get(1);
             totalIncidentLoadAverage += monitorValues.get(2);
-            float maxBlockTime = monitorValues.get(3);
-            long currentTime = System.currentTimeMillis();
-            totalIncidentMaxBlockTime += maxBlockTime/(float)(currentTime- START_TIME);
+            totalIncidentMaxBlockTime += monitorValues.get(3);
 
             dataExtractCount += 1;
             DataExtractor dataExtractor = new DataExtractor();
             dataExtractor.storeData();
-            try {
-                Thread.sleep(DATA_EXTRACTING_TIME_PERIOD);
-            } catch (InterruptedException e) {
-                log.error(e.getMessage());
-            }
         }
 
         //Take the average values of total monitoring values
-        float avgIncidentHeapMRatio = totalIncidentHeapMRatio / DATA_EXTRACTING_COUNT_THRESHOLD;
-        float avgIncidentCpuMRatio = totalIncidentCpuMRatio / DATA_EXTRACTING_COUNT_THRESHOLD;
-        float avgIncidentLoadAverage = totalIncidentLoadAverage / DATA_EXTRACTING_COUNT_THRESHOLD;
-        float avgIncidentMaxBlockTime = totalIncidentMaxBlockTime / DATA_EXTRACTING_COUNT_THRESHOLD;
+        float avgIncidentHeapMRatio =
+                totalIncidentHeapMRatio / Constants.IncidentHandlerThresholdValues.INCIDENT_TIME_MONITORING_COUNT;
+        float avgIncidentCpuMRatio =
+                totalIncidentCpuMRatio / Constants.IncidentHandlerThresholdValues.INCIDENT_TIME_MONITORING_COUNT;
+        float avgIncidentLoadAverage =
+                totalIncidentLoadAverage / Constants.IncidentHandlerThresholdValues.INCIDENT_TIME_MONITORING_COUNT;
+        float avgIncidentMaxBlockTime =
+                totalIncidentMaxBlockTime / Constants.IncidentHandlerThresholdValues.INCIDENT_TIME_MONITORING_COUNT;
 
         //Check whether it is a real issue or not
         return (avgIncidentHeapMRatio > thresholdValues.get(0)) | (avgIncidentCpuMRatio > thresholdValues.get(1)) |

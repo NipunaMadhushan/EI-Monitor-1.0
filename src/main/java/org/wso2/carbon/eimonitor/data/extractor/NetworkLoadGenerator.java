@@ -19,17 +19,25 @@ package org.wso2.carbon.eimonitor.data.extractor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
-
-import javax.management.*;
-import java.io.*;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Calendar;
+import javax.management.AttributeNotFoundException;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanException;
+import javax.management.MBeanServerConnection;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import javax.management.ReflectionException;
 
+/**
+ * This class is used to generate a text file which includes the data related to the network load.
+ */
 public class NetworkLoadGenerator {
 
     private static final Log log = LogFactory.getLog(NetworkLoadGenerator.class);
 
     public void getNetworkLoad(MBeanServerConnection beanServerConnection) {
-        final String networkLoadFile = Constants.DirectoryNames.NETWORK_LOAD_FILE;
         try {
             ObjectName sndAttrName = new ObjectName("org.apache.synapse:Type=Transport,Name=passthru-http-sender");
             Object sndMsgsSent = beanServerConnection.getAttribute(sndAttrName, "MessagesSent");
@@ -50,22 +58,21 @@ public class NetworkLoadGenerator {
 
             //writing the network load into a text file
             networkLoadWriter(Calendar.getInstance().getTime() + "  Sender : " + senderNetworkLoad,
-                    networkLoadFile);
+                    Constants.DirectoryNames.NETWORK_LOAD_FILE);
             networkLoadWriter(Calendar.getInstance().getTime() + "  Receiver : " + receiverNetworkLoad,
-                    networkLoadFile);
+                    Constants.DirectoryNames.NETWORK_LOAD_FILE);
 
             log.info("Network Load file is generated !!!");
 
         } catch (MalformedObjectNameException | ReflectionException | IOException | InstanceNotFoundException |
-                MBeanException | AttributeNotFoundException e){
+                MBeanException | AttributeNotFoundException e) {
             log.error("Network Load file generation failed !!! " + e.getMessage());
         }
     }
 
-    private void networkLoadWriter(String networkLoad, String fileName){
-
+    private void networkLoadWriter(String networkLoad, String fileName) {
         try {
-            FileWriter outputStream = new FileWriter(fileName,true);
+            FileWriter outputStream = new FileWriter(fileName, true);
             outputStream.write(networkLoad);
             outputStream.write("\n");
             outputStream.close();

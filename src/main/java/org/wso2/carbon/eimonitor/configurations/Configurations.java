@@ -22,10 +22,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * This class is used to read the configured data in EI_Monitor_Configurations.properties file in the ${EI_HOME}/conf
+ * directory.
+ */
 public class Configurations {
 
     private static final Logger logger = LogManager.getLogger();
-    private final String BASE_DIRECTORY = System.getProperty("user.dir");
+    private String baseDirectory = System.getProperty("user.dir");
 
     /**
      * This method returns the value of the property which has been configured in the
@@ -37,7 +41,7 @@ public class Configurations {
     public String getProperty(String property) {
         try {
             Properties properties = new Properties();
-            String fileName = BASE_DIRECTORY + "/conf/EI-Monitor-Configurations.properties";
+            String fileName = baseDirectory + "/conf/EI-Monitor-Configurations.properties";
             FileInputStream file = new FileInputStream(fileName);
             properties.load(file);
             String propertyValue = properties.getProperty(property);

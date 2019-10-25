@@ -26,6 +26,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
+/**
+ * This class is used to clean files or a file directory.
+ */
 public class FileCleaner {
 
     private static final Log log = LogFactory.getLog(FileCleaner.class);

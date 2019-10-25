@@ -19,6 +19,9 @@ package org.wso2.carbon.eimonitor.monitor;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 
+/**
+ * This class is used to read Heap Memory.
+ */
 public class HeapMemory {
 
     /**
@@ -30,8 +33,8 @@ public class HeapMemory {
         MemoryMXBean memoryMXBeanProxy = ManagementFactory.getMemoryMXBean();
 
         //Calculate heap memory ratio
-        float usedHeapMemory = (float)memoryMXBeanProxy.getHeapMemoryUsage().getUsed();
-        float committedHeapMemory = (float)memoryMXBeanProxy.getHeapMemoryUsage().getCommitted();
+        float usedHeapMemory = (float) memoryMXBeanProxy.getHeapMemoryUsage().getUsed();
+        float committedHeapMemory = (float) memoryMXBeanProxy.getHeapMemoryUsage().getCommitted();
         float heapMemoryRatio = usedHeapMemory / committedHeapMemory;
 
         return heapMemoryRatio;

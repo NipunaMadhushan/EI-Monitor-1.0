@@ -18,19 +18,22 @@ package org.wso2.carbon.eimonitor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import java.util.HashMap;
+import java.util.Map;
 import javax.management.MBeanServerConnection;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
-import java.util.HashMap;
-import java.util.Map;
 
+/**
+ * This class is used to connect to the WSO2 Enterprise Integrator JMX connector.
+ */
 public class JMXConnection {
 
     private static final Log log = LogFactory.getLog(JMXConnection.class);
 
     /**
-     * This method returns the JMX connection for the WSO2 EI server
+     * This method returns the JMX connection for the WSO2 EI server.
      * @return JMX connection
      */
     public MBeanServerConnection getJMXConnection() {
@@ -38,17 +41,17 @@ public class JMXConnection {
         MBeanServerConnection mbeanServerConnection = null;
 
         try {
-            String URL_STRING = "service:jmx:rmi://localhost:11111/jndi/rmi://localhost:9999/jmxrmi";
-            JMXServiceURL url = new JMXServiceURL(URL_STRING);
+            String urlString = "service:jmx:rmi://localhost:11111/jndi/rmi://localhost:9999/jmxrmi";
+            JMXServiceURL url = new JMXServiceURL(urlString);
 
             //Pass credentials for password
             Map<String, String[]> env = new HashMap<>();
             String[] credentials = {"admin", "admin"};
             env.put(JMXConnector.CREDENTIALS, credentials);
 
-            JMXConnector jmxConnector = JMXConnectorFactory.connect(url,env);
+            JMXConnector jmxConnector = JMXConnectorFactory.connect(url, env);
             mbeanServerConnection = jmxConnector.getMBeanServerConnection();
-            log.info("Successfully connected to the URL :- " + URL_STRING);
+            log.info("Successfully connected to the URL :- " + urlString);
 
         } catch (Exception e) {
             log.error("JMX Connection Failed !!! " + e.getMessage());

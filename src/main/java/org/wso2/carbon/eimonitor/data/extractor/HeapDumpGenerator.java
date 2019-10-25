@@ -20,11 +20,13 @@ import com.sun.management.HotSpotDiagnosticMXBean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
-
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import javax.management.MBeanServer;
 
+/**
+ * This class is used to generate a heap dump.
+ */
 public class HeapDumpGenerator {
 
     private static final Log log = LogFactory.getLog(HeapDumpGenerator.class);
@@ -46,7 +48,7 @@ public class HeapDumpGenerator {
             HotSpotDiagnosticMXBean hotSpotDiagnosticMXBean = ManagementFactory.newPlatformMXBeanProxy(server,
                     hotspotBeanName, HotSpotDiagnosticMXBean.class);
 
-            hotSpotDiagnosticMXBean.dumpHeap(dumpFile,true);
+            hotSpotDiagnosticMXBean.dumpHeap(dumpFile, true);
 
         } catch (IOException e) {
             log.error("Heap Dump Generation failed !!!" + e.getMessage());

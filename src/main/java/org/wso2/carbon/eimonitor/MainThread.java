@@ -8,10 +8,14 @@ import org.wso2.carbon.eimonitor.incident.handler.IncidentHandler;
 import org.wso2.carbon.eimonitor.monitor.Monitor;
 import java.util.List;
 
+/**
+ * This class extends a thread to run the EI_Monitor.
+ * This class combines all the sub work stations and run it in a single thread.
+ */
 public class MainThread extends Thread {
     private static final Log log = LogFactory.getLog(MainThread.class);
-    public static final long START_TIME = System.currentTimeMillis();
-    public static boolean incidentHandlerState = false;
+
+    private boolean incidentHandlerState = false;
     public static int dataExtractCount = 0;
 
     private FileCleaner fileCleaner = new FileCleaner();
@@ -23,9 +27,9 @@ public class MainThread extends Thread {
      */
     @Override
     public void run() {
-        while(true) {
+        while (true) {
             //Clean the file directories of data
-            fileCleaner.cleanDirectory(Constants.DirectoryNames.BASE_DIRECTORY +"/Data");
+            fileCleaner.cleanDirectory(Constants.DirectoryNames.BASE_DIRECTORY + "/Data");
             //Generate the file directories of data
             fileGenerator.generateAllDirectories();
 
@@ -54,21 +58,16 @@ public class MainThread extends Thread {
 
             if (issueState) {
                 log.info("An issue has occurred in the system !!!");
-                while(true){
-                    dataExtractCount += 1;
-                    DataExtractor dataExtractor = new DataExtractor();
-                    dataExtractor.storeData();
-                }
-            }
-            else {
+                break;
+            } else {
                 log.info("Previous incident is not an issue !!!");
             }
+        }
 
-            try {
-                MainThread.sleep(5000);
-            } catch (InterruptedException e) {
-                log.error(e.getMessage());
-            }
+        while (true) {
+            dataExtractCount += 1;
+            DataExtractor dataExtractor = new DataExtractor();
+            dataExtractor.storeData();
         }
     }
 }

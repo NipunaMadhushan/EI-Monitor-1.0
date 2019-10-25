@@ -21,6 +21,10 @@ import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+/**
+ * This class can be used to read the configured data in the EI_Monitor_Configurations.properties file in the
+ * ${EI_HOME}/conf.
+ */
 public class Activator implements BundleActivator {
 
     private static BundleContext bundleContext;

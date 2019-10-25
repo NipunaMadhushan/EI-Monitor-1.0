@@ -18,8 +18,10 @@ package org.wso2.carbon.eimonitor.monitor;
 
 import java.util.ArrayList;
 import java.util.List;
-import static org.wso2.carbon.eimonitor.MainThread.START_TIME;
 
+/**
+ * This class is used to read all the monitoring values in this tool.
+ */
 public class Monitor {
 
     /**
@@ -33,19 +35,17 @@ public class Monitor {
     */
     public List<Float> getMonitorDetails() {
         //Monitor the WSO2 EI server
-        long currentTime = System.currentTimeMillis();
         float heapMemoryRatio = new HeapMemory().getHeapMemoryUsage();
         float cpuMemoryRatio = new CPUMemory().getCPUMemoryUsage();
         float systemLoadAverage = (float) new LoadAverage().getSystemLoadAverage();
-        int maxBlockedTime = new ThreadStatus().getThreadStatusDetails();
-        float averageMaxBlockedTime = (float)maxBlockedTime / (float)(currentTime - START_TIME);
+        float avgMaxBlockedTime = new ThreadStatus().getThreadStatusDetails();
 
         //Add the monitor values to a list
         List<Float> monitorValues = new ArrayList<>();
         monitorValues.add(heapMemoryRatio);
         monitorValues.add(cpuMemoryRatio);
         monitorValues.add(systemLoadAverage);
-        monitorValues.add(averageMaxBlockedTime);
+        monitorValues.add(avgMaxBlockedTime);
 
         return monitorValues;
     }

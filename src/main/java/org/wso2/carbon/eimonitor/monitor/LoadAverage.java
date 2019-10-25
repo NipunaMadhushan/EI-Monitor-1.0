@@ -19,6 +19,9 @@ package org.wso2.carbon.eimonitor.monitor;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 
+/**
+ * This class is used to read the System Load Average.
+ */
 public class LoadAverage {
 
     /**

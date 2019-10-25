@@ -23,6 +23,9 @@ import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * This class is used to create file directories and files.
+ */
 public class FileGenerator {
 
     private static final Log log = LogFactory.getLog(FileGenerator.class);
@@ -57,18 +60,22 @@ public class FileGenerator {
     }
 
     /**
-     * This method generates all the file directories related to the EI_Monitor
+     * This method generates all the file directories related to the EI_Monitor.
      */
     public void generateAllDirectories() {
         FileGenerator fileGenerator = new FileGenerator();
-        fileGenerator.generateDirectory(Constants.DirectoryNames.BASE_DIRECTORY,"Data");
+        fileGenerator.generateDirectory(Constants.DirectoryNames.BASE_DIRECTORY, "Data");
         fileGenerator.generateDirectory(Constants.DirectoryNames.BASE_DIRECTORY + "/Data",
                 "Heap Dumps");
         fileGenerator.generateDirectory(Constants.DirectoryNames.BASE_DIRECTORY + "/Data",
                 "Thread Dumps");
         fileGenerator.generateDirectory(Constants.DirectoryNames.BASE_DIRECTORY + "/Data",
                 "Network Load");
+        fileGenerator.generateDirectory(Constants.DirectoryNames.BASE_DIRECTORY + "/Data",
+                "Logs");
         fileGenerator.generateTextFile(Constants.DirectoryNames.NETWORK_LOAD_FILE_DIRECTORY,
                 Constants.DirectoryNames.NETWORK_LOAD_FILE_NAME);
+        fileGenerator.generateTextFile(Constants.DirectoryNames.LOG_FILE_DIRECTORY,
+                Constants.DirectoryNames.LOG_FILE_NAME);
     }
 }

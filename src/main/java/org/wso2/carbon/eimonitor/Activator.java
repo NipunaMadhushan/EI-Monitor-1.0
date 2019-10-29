@@ -16,8 +16,6 @@
 
 package org.wso2.carbon.eimonitor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -27,27 +25,19 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator implements BundleActivator {
 
-    private static BundleContext bundleContext;
-
-    private static final Log log = LogFactory.getLog(Activator.class);
-    private Thread thread = new MainThread();
-
     /**
      * This method starts the bundle activator and the EI Monitor.
-     * @param bundleContext is equal to the bundle contest of the class
-     * @throws InterruptedException
+     * @param context is equal to the bundle contest of the class
      */
-    public void start(BundleContext bundleContext) throws InterruptedException {
-        Activator.bundleContext = bundleContext;
+    public void start(BundleContext context) {
+        Thread thread = new MainThread();
         thread.start();
     }
 
     /**
      * This method stops the bundle activator and the EI Monitor.
-     * @param bundleContext is equal to null
-     * @throws InterruptedException
+     * @param context is equal to null
      */
-    public void stop(BundleContext bundleContext) throws InterruptedException {
-        Activator.bundleContext = null;
+    public void stop(BundleContext context) {
     }
 }

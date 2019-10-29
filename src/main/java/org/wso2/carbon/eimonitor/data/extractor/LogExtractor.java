@@ -20,13 +20,10 @@ import org.apache.commons.io.input.Tailer;
 import org.apache.commons.io.input.TailerListenerAdapter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.awaitility.Awaitility;
 import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This class is used to extract logs from the wso2carbon.log file and write the logs into a text file.
@@ -58,8 +55,15 @@ class LogExtractor {
     }
 
     void run() {
-        Awaitility.await().pollInterval(10, TimeUnit.MILLISECONDS).
-                atMost(5, TimeUnit.SECONDS).until(tailIsAlive());
+        try {
+            int timePeriod = Constants.DataExtractThresholdValues.DATA_EXTRACTING_TIME_PERIOD;
+            while (timePeriod > 0) {
+                Thread.sleep(10);
+                timePeriod -= 10;
+            }
+        } catch (InterruptedException e) {
+            log.error(e.getMessage());
+        }
     }
 
     private Callable<Boolean> tailIsAlive() {

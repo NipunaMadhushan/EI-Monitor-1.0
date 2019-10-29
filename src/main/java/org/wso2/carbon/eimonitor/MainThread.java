@@ -16,11 +16,10 @@ public class MainThread extends Thread {
     private static final Log log = LogFactory.getLog(MainThread.class);
 
     private boolean incidentHandlerState = false;
-    public static int dataExtractCount = 0;
-
+    private int dataExtractCount = 0;
     private FileCleaner fileCleaner = new FileCleaner();
     private FileGenerator fileGenerator = new FileGenerator();
-    private IncidentHandler incidentHandler = new IncidentHandler();
+    private IncidentHandler incidentHandler = new IncidentHandler(dataExtractCount);
 
     /**
      * This method includes the main logic of the EI Monitor.
@@ -39,9 +38,9 @@ public class MainThread extends Thread {
                 //Get monitor details
                 List<Float> monitorValues = new Monitor().getMonitorDetails();
 
-                log.debug("Heap Memory Percentage : " + monitorValues.get(0) * 100 +
-                        "% , CPU Memory Percentage : " + monitorValues.get(1) * 100 + "% , Load Average : " +
-                        monitorValues.get(2) + " , Average Maximum Blocked Time : " + monitorValues.get(3));
+                //log.debug("Heap Memory Percentage : " + monitorValues.get(0) * 100 +
+                //        "% , CPU Memory Percentage : " + monitorValues.get(1) * 100 + "% , Load Average : " +
+                //        monitorValues.get(2) + " , Average Maximum Blocked Time : " + monitorValues.get(3));
 
                 //Check whether there is an incident is happening or not
                 incidentHandlerState = incidentHandler.handleAll(monitorValues);
@@ -55,7 +54,7 @@ public class MainThread extends Thread {
 
             //Check whether that the incident captured is a real issue or not
             boolean issueState = incidentHandler.handleIncidentTimePeriod();
-
+            dataExtractCount += Constants.IncidentHandlerThresholdValues.INCIDENT_TIME_MONITORING_COUNT;
             if (issueState) {
                 log.info("An issue has occurred in the system !!!");
                 break;
@@ -66,7 +65,7 @@ public class MainThread extends Thread {
 
         while (true) {
             dataExtractCount += 1;
-            DataExtractor dataExtractor = new DataExtractor();
+            DataExtractor dataExtractor = new DataExtractor(dataExtractCount);
             dataExtractor.storeData();
         }
     }

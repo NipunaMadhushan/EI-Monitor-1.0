@@ -18,15 +18,17 @@ package org.wso2.carbon.eimonitor.data.extractor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.eimonitor.MainThread;
-import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
-import static org.wso2.carbon.eimonitor.MainThread.dataExtractCount;
 
 /**
  * This class is used to extract the data.
  */
 public class DataExtractor {
     private static final Log log = LogFactory.getLog(DataExtractor.class);
+    private int dataExtractCount;
+
+    public DataExtractor(int dataExtractCount) {
+        this.dataExtractCount = dataExtractCount;
+    }
     /**
      * This method stores the data of heap dump generator,thread dump generator and the network load generator.
      */
@@ -36,13 +38,8 @@ public class DataExtractor {
         ThreadDumpGenerator threadDumpGenerator = new ThreadDumpGenerator();
         threadDumpGenerator.getThreadDump(dataExtractCount);
         LogExtractor logExtractor = new LogExtractor();
-        try {
-            logExtractor.run();
-            MainThread.sleep(Constants.DataExtractThresholdValues.DATA_EXTRACTING_TIME_PERIOD);
-            logExtractor.logWriter(logExtractor.getLogs());
-            logExtractor.stop();
-        } catch (InterruptedException e) {
-            log.error(e.getMessage());
-        }
+        logExtractor.run();
+        logExtractor.logWriter(logExtractor.getLogs());
+        logExtractor.stop();
     }
 }

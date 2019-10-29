@@ -21,7 +21,6 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
 import org.wso2.carbon.eimonitor.data.extractor.DataExtractor;
 import org.wso2.carbon.eimonitor.monitor.Monitor;
-import static org.wso2.carbon.eimonitor.MainThread.dataExtractCount;
 import java.util.List;
 
 /**
@@ -31,6 +30,11 @@ import java.util.List;
 public class IncidentHandler {
     private static final Log log = LogFactory.getLog(IncidentHandler.class);
     private List<Float> thresholdValues = Constants.IncidentHandlerThresholdValues.getAllThresholdValues();
+    private int dataExtractCount;
+
+    public IncidentHandler(int dataExtractCount) {
+        this.dataExtractCount = dataExtractCount;
+    }
 
     /**
      * This method handles all the incidents given below which can occur in the EI server.
@@ -56,7 +60,8 @@ public class IncidentHandler {
             return state;
         } else {
             log.error("List sizes of threshold values and monitors are not equal !!!");
-            return Boolean.parseBoolean(null);
+            Boolean.parseBoolean(null);
+            return false;
         }
     }
 
@@ -73,11 +78,11 @@ public class IncidentHandler {
         float totalIncidentLoadAverage = 0;
         float totalIncidentMaxBlockTime = 0;
 
-        Monitor monitor = new Monitor();
         //Add the monitoring values for a configurable number of times
         for (int dataExtractNumber = 0;
              dataExtractNumber < Constants.IncidentHandlerThresholdValues.INCIDENT_TIME_MONITORING_COUNT;
              dataExtractNumber++) {
+            Monitor monitor = new Monitor();
             List<Float> monitorValues = monitor.getMonitorDetails();
             totalIncidentHeapMRatio += monitorValues.get(0);
             totalIncidentCpuMRatio += monitorValues.get(1);
@@ -85,7 +90,7 @@ public class IncidentHandler {
             totalIncidentMaxBlockTime += monitorValues.get(3);
 
             dataExtractCount += 1;
-            DataExtractor dataExtractor = new DataExtractor();
+            DataExtractor dataExtractor = new DataExtractor(dataExtractCount);
             dataExtractor.storeData();
         }
 

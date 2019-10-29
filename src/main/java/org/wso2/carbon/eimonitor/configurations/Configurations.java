@@ -16,8 +16,8 @@
 
 package org.wso2.carbon.eimonitor.configurations;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -28,7 +28,7 @@ import java.util.Properties;
  */
 public class Configurations {
 
-    private static final Logger logger = LogManager.getLogger();
+    private static final Log log = LogFactory.getLog(Configurations.class);
     private String baseDirectory = System.getProperty("user.dir");
 
     /**
@@ -44,12 +44,11 @@ public class Configurations {
             String fileName = baseDirectory + "/conf/EI-Monitor-Configurations.properties";
             FileInputStream file = new FileInputStream(fileName);
             properties.load(file);
-            String propertyValue = properties.getProperty(property);
 
-            return propertyValue;
+            return properties.getProperty(property);
 
         } catch (IOException e) {
-            logger.error("Failed to read configurations !!! " + e.getMessage());
+            log.error("Failed to read configurations !!! " + e.getMessage());
         }
         return null;
     }

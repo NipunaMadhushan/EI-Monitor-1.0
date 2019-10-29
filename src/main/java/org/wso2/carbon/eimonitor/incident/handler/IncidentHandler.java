@@ -61,7 +61,6 @@ public class IncidentHandler {
             return state;
         } else {
             log.error("List sizes of threshold values and monitors are not equal !!!");
-            Boolean.parseBoolean(null);
             return false;
         }
     }

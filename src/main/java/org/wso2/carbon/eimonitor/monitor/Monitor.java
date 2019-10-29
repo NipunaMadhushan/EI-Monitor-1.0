@@ -35,10 +35,14 @@ public class Monitor {
     */
     public List<Float> getMonitorDetails() {
         //Monitor the WSO2 EI server
-        float heapMemoryRatio = new HeapMemory().getHeapMemoryUsage();
-        float cpuMemoryRatio = new CPUMemory().getCPUMemoryUsage();
-        float systemLoadAverage = (float) new LoadAverage().getSystemLoadAverage();
-        float avgMaxBlockedTime = new ThreadStatus().getThreadStatusDetails();
+        HeapMemory heapMemory = new HeapMemory();
+        float heapMemoryRatio = heapMemory.getHeapMemoryUsage();
+        CPUMemory cpuMemory = new CPUMemory();
+        float cpuMemoryRatio = cpuMemory.getCPUMemoryUsage();
+        LoadAverage loadAverage = new LoadAverage();
+        float systemLoadAverage = (float) loadAverage.getSystemLoadAverage();
+        ThreadStatus threadStatus = new ThreadStatus();
+        float avgMaxBlockedTime = threadStatus.getThreadStatusDetails();
 
         //Add the monitor values to a list
         List<Float> monitorValues = new ArrayList<>();

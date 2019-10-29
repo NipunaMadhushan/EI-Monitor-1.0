@@ -69,7 +69,7 @@ public class MainThread extends Thread {
                 log.info("Previous incident is not an issue !!!");
             }
         }
-
+        //Extract the data after identifying an issue has occurred.
         while (true) {
             dataExtractCount += 1;
             DataExtractor dataExtractor = new DataExtractor(dataExtractCount);

@@ -23,7 +23,7 @@ import java.lang.management.ThreadMXBean;
 /**
  * This class is used to read the thread status.
  */
-public class ThreadStatus {
+class ThreadStatus {
 
     /**
      * This method returns the Maximum Blocked Time among all threads.
@@ -31,25 +31,25 @@ public class ThreadStatus {
      * @return maxBlockedTime as an integer
      */
 
-    public float getThreadStatusDetails() {
+    float getThreadStatusDetails() {
         //Get the thread information or all threads
         ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
         threadMXBean.setThreadContentionMonitoringEnabled(true);
         ThreadInfo[] threadInfos = threadMXBean.getThreadInfo(threadMXBean.getAllThreadIds(), 1000);
 
-        float maxAvgBlockedCount = 0;
+        float maxAvgBlockedTime = 0;
 
         //Find the average maximum blocked time among the threads
         for (ThreadInfo threadInfo : threadInfos) {
-            long blockedCount = threadInfo.getBlockedCount();
+            long blockedTime = threadInfo.getBlockedTime();
             long threadId = threadInfo.getThreadId();
             long threadCpuTime = threadMXBean.getThreadCpuTime(threadId);
 
-            if (((float) blockedCount / (float) threadCpuTime) > maxAvgBlockedCount) {
-                maxAvgBlockedCount = (float) blockedCount / (float) threadCpuTime;
+            if (((float) blockedTime / (float) threadCpuTime) > maxAvgBlockedTime) {
+                maxAvgBlockedTime = (float) blockedTime / (float) threadCpuTime;
             }
         }
 
-        return maxAvgBlockedCount;
+        return maxAvgBlockedTime;
     }
 }

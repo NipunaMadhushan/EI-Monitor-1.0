@@ -22,20 +22,19 @@ import java.lang.management.ManagementFactory;
 /**
  * This class is used to read CPUMemory.
  */
-public class CPUMemory {
+class CPUMemory {
 
     /**
      * This method returns the CPU Memory Usage as a ratio of used CPU memory to total CPU memory at an instance time.
      * @return cpuUsage as a float
      */
-    public float getCPUMemoryUsage() {
+    float getCPUMemoryUsage() {
         OperatingSystemMXBean operatingSystemMXBean =
                 (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
         //Calculate the CPU memory ratio
         long totalMemory = operatingSystemMXBean.getTotalPhysicalMemorySize();
         long freeMemory = operatingSystemMXBean.getFreePhysicalMemorySize();
-        float cpuUsage = (float) freeMemory / (float) totalMemory;
 
-        return cpuUsage;
+        return (float) freeMemory / (float) totalMemory;
     }
 }

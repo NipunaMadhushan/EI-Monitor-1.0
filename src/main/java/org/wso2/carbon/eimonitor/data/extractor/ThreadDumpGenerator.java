@@ -27,7 +27,7 @@ import java.lang.management.ThreadMXBean;
 /**
  * This class is used to generate thread dump as a text file.
  */
-class ThreadDumpGenerator {
+public class ThreadDumpGenerator {
 
     private static final Log log = LogFactory.getLog(ThreadDumpGenerator.class);
 
@@ -35,7 +35,7 @@ class ThreadDumpGenerator {
      * This method generates thread dump as string into a string builder.
      * @param number Thread dump number
      */
-    void getThreadDump(int number) {
+    public void getThreadDump(int number) {
         try {
             //Get the thread details of each threads
             StringBuilder dump = new StringBuilder();
@@ -80,6 +80,7 @@ class ThreadDumpGenerator {
 
         String fileName = "ThreadDump-" + number + ".txt";
         String dumpFile = threadDumpFileDirectory + "/" + fileName;
+
         try {
             PrintWriter outputStream = new PrintWriter(dumpFile);
             outputStream.println(threadDump);

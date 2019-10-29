@@ -28,8 +28,9 @@ public class Activator implements BundleActivator {
     /**
      * This method starts the bundle activator and the EI Monitor.
      * @param context is equal to the bundle contest of the class
+     * @throws InterruptedException due to sleep in thread
      */
-    public void start(BundleContext context) {
+    public void start(BundleContext context) throws InterruptedException {
         Thread thread = new MainThread();
         thread.start();
     }

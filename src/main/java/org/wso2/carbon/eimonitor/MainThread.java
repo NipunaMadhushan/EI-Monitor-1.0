@@ -15,17 +15,21 @@ import java.util.List;
 public class MainThread extends Thread {
     private static final Log log = LogFactory.getLog(MainThread.class);
 
-    private boolean incidentHandlerState = false;
-    private int dataExtractCount = 0;
     private FileCleaner fileCleaner = new FileCleaner();
     private FileGenerator fileGenerator = new FileGenerator();
-    private IncidentHandler incidentHandler = new IncidentHandler(dataExtractCount);
 
     /**
      * This method includes the main logic of the EI Monitor.
      */
     @Override
     public void run() {
+        try {
+            MainThread.sleep(60000);
+        } catch (InterruptedException e) {
+            log.error(e.getMessage());
+        }
+
+        int dataExtractCount;
         while (true) {
             //Clean the file directories of data
             fileCleaner.cleanDirectory(Constants.DirectoryNames.BASE_DIRECTORY + "/Data");
@@ -33,14 +37,17 @@ public class MainThread extends Thread {
             fileGenerator.generateAllDirectories();
 
             dataExtractCount = 0;
+            boolean incidentHandlerState = false;
+            IncidentHandler incidentHandler = new IncidentHandler(dataExtractCount);
+
             //Monitor the WSO2 EI server and checking whether there is an incident is happening or not
             while (!incidentHandlerState) {
                 //Get monitor details
                 List<Float> monitorValues = new Monitor().getMonitorDetails();
 
-                //log.debug("Heap Memory Percentage : " + monitorValues.get(0) * 100 +
-                //        "% , CPU Memory Percentage : " + monitorValues.get(1) * 100 + "% , Load Average : " +
-                //        monitorValues.get(2) + " , Average Maximum Blocked Time : " + monitorValues.get(3));
+                log.info("Heap Memory Percentage : " + monitorValues.get(0) * 100 + "% , CPU Memory Percentage : "
+                        + monitorValues.get(1) * 100 + "% , Load Average : " +
+                        monitorValues.get(2) + " , Average Maximum Blocked Time : " + monitorValues.get(3));
 
                 //Check whether there is an incident is happening or not
                 incidentHandlerState = incidentHandler.handleAll(monitorValues);

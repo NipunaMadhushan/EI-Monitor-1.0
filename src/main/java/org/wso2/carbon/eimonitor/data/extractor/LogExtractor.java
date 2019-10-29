@@ -20,6 +20,7 @@ import org.apache.commons.io.input.Tailer;
 import org.apache.commons.io.input.TailerListenerAdapter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.eimonitor.MainThread;
 import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
 import java.io.File;
 import java.io.FileWriter;
@@ -34,9 +35,10 @@ class LogExtractor {
     private Callable<Boolean> tailState = () -> true;
     private CarbonLogTailer carbonLogTailer = new CarbonLogTailer();
     private int sleep = 500;
+    private String baseDirectory = System.getProperty("user.dir");
     private File carbonLogFile =
-            new File("/home/nipuna/Desktop/wso2ei-6.5.0/repository/logs/wso2carbon.log");
-    private Tailer tailer = Tailer.create(carbonLogFile, carbonLogTailer, sleep, true);
+            new File(baseDirectory + "/repository/logs/wso2carbon.log");
+    private Tailer tailer = Tailer.create(carbonLogFile, carbonLogTailer, sleep, false);
 
     /**
      * This method is used to write the log stream we created to a log file in a configurable file directory.
@@ -56,11 +58,7 @@ class LogExtractor {
 
     void run() {
         try {
-            int timePeriod = Constants.DataExtractThresholdValues.DATA_EXTRACTING_TIME_PERIOD;
-            while (timePeriod > 0) {
-                Thread.sleep(10);
-                timePeriod -= 10;
-            }
+            MainThread.sleep(Constants.DataExtractThresholdValues.DATA_EXTRACTING_TIME_PERIOD);
         } catch (InterruptedException e) {
             log.error(e.getMessage());
         }

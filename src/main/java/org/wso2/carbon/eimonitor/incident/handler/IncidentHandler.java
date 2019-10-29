@@ -54,6 +54,7 @@ public class IncidentHandler {
             for (int itemIndex = 0; itemIndex < thresholdValues.size(); itemIndex++) {
                 if (monitorValues.get(itemIndex) > thresholdValues.get(itemIndex)) {
                     state = true;
+                    log.warn("An Incident has been captured");
                     break;
                 }
             }

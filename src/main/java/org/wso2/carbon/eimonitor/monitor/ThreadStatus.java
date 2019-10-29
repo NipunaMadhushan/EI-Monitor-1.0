@@ -37,19 +37,19 @@ public class ThreadStatus {
         threadMXBean.setThreadContentionMonitoringEnabled(true);
         ThreadInfo[] threadInfos = threadMXBean.getThreadInfo(threadMXBean.getAllThreadIds(), 1000);
 
-        float maxAvgBlockedTime = 0;
+        float maxAvgBlockedCount = 0;
 
         //Find the average maximum blocked time among the threads
         for (ThreadInfo threadInfo : threadInfos) {
-            long blockedTime = threadInfo.getBlockedTime();
+            long blockedCount = threadInfo.getBlockedCount();
             long threadId = threadInfo.getThreadId();
             long threadCpuTime = threadMXBean.getThreadCpuTime(threadId);
 
-            if (((float) blockedTime / (float) threadCpuTime) > maxAvgBlockedTime) {
-                maxAvgBlockedTime = (float) blockedTime / (float) threadCpuTime;
+            if (((float) blockedCount / (float) threadCpuTime) > maxAvgBlockedCount) {
+                maxAvgBlockedCount = (float) blockedCount / (float) threadCpuTime;
             }
         }
 
-        return maxAvgBlockedTime;
+        return maxAvgBlockedCount;
     }
 }

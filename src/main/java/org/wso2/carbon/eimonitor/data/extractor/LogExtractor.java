@@ -24,7 +24,6 @@ import org.wso2.carbon.eimonitor.MainThread;
 import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.concurrent.Callable;
 
 /**
  * This class is used to extract logs from the wso2carbon.log file and write the logs into a text file.
@@ -32,13 +31,11 @@ import java.util.concurrent.Callable;
 class LogExtractor {
     private static final Log log = LogFactory.getLog(LogExtractor.class);
 
-    private Callable<Boolean> tailState = () -> true;
     private CarbonLogTailer carbonLogTailer = new CarbonLogTailer();
     private int sleep = 500;
     private String baseDirectory = System.getProperty("user.dir");
-    private File carbonLogFile =
-            new File(baseDirectory + "/repository/logs/wso2carbon.log");
-    private Tailer tailer = Tailer.create(carbonLogFile, carbonLogTailer, sleep, false);
+    private File carbonLogFile = new File(baseDirectory + "/repository/logs/wso2carbon.log");
+    private Tailer tailer = Tailer.create(carbonLogFile, carbonLogTailer, sleep, true);
 
     /**
      * This method is used to write the log stream we created to a log file in a configurable file directory.
@@ -64,17 +61,12 @@ class LogExtractor {
         }
     }
 
-    private Callable<Boolean> tailIsAlive() {
-        return tailState;
-    }
-
     String getLogs() {
         return carbonLogTailer.getCarbonLogs();
     }
 
     void stop() {
         tailer.stop();
-        tailState = () -> false;
     }
 
     /**

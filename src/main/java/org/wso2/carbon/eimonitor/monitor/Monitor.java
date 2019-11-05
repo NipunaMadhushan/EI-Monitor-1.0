@@ -16,41 +16,39 @@
 
 package org.wso2.carbon.eimonitor.monitor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 /**
  * This class is used to read all the monitoring values in this tool.
  */
 public class Monitor {
+    private HashMap monitorValues = new HashMap<String, Float>();
+    private HeapMemory heapMemory = new HeapMemory();
+    private CPUMemory cpuMemory = new CPUMemory();
+    private LoadAverage loadAverage = new LoadAverage();
+    private ThreadStatus threadStatus = new ThreadStatus();
 
-    /**
-     * This method returns all the features which are monitored in the WSO2 EI.
-     * There is an order in the return output of this method.
-     *      1)Heap Memory Ratio
-     *      2)CPU Memory Ratio
-     *      3)System Load Average
-     *      4)Average Maximum Blocked Time
-     * @return All the monitored features as floats inside a List.
-    */
-    public List<Float> getMonitorDetails() {
-        //Monitor the WSO2 EI server
-        HeapMemory heapMemory = new HeapMemory();
-        float heapMemoryRatio = heapMemory.getHeapMemoryUsage();
-        CPUMemory cpuMemory = new CPUMemory();
-        float cpuMemoryRatio = cpuMemory.getCPUMemoryUsage();
-        LoadAverage loadAverage = new LoadAverage();
-        float systemLoadAverage = (float) loadAverage.getSystemLoadAverage();
-        ThreadStatus threadStatus = new ThreadStatus();
-        float avgMaxBlockedTime = threadStatus.getThreadStatusDetails();
+    public void setMonitorValues() {
+        monitorValues.clear();
 
-        //Add the monitor values to a list
-        List<Float> monitorValues = new ArrayList<>();
-        monitorValues.add(heapMemoryRatio);
-        monitorValues.add(cpuMemoryRatio);
-        monitorValues.add(systemLoadAverage);
-        monitorValues.add(avgMaxBlockedTime);
+        heapMemory.setHeapMemoryRatio();
+        float heapMemoryRatio = heapMemory.getHeapMemoryRatio();
+        monitorValues.put("Heap Memory Ratio", heapMemoryRatio);
 
+        cpuMemory.setCpuMemoryRatio();
+        float cpuMemoryRatio = cpuMemory.getCpuMemoryRatio();
+        monitorValues.put("CPU Memory Ratio", cpuMemoryRatio);
+
+        loadAverage.setSystemLoadAverage();
+        float systemLoadAverage = loadAverage.getSystemLoadAverage();
+        monitorValues.put("System Load Average", systemLoadAverage);
+
+        threadStatus.setAvgMaxBlockedTime();
+        float avgMaxBlockedTime = threadStatus.getAvgMaxBlockedTime();
+        monitorValues.put("Avg Max Blocked Time", avgMaxBlockedTime);
+    }
+    public HashMap getMonitorValues() {
         return monitorValues;
     }
+
 }

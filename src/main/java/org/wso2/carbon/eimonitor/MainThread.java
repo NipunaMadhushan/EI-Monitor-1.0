@@ -2,11 +2,13 @@ package org.wso2.carbon.eimonitor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.eimonitor.configurations.Properties;
 import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
 import org.wso2.carbon.eimonitor.data.extractor.DataExtractor;
 import org.wso2.carbon.eimonitor.incident.handler.IncidentHandler;
 import org.wso2.carbon.eimonitor.monitor.Monitor;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * This class extends a thread to run the EI_Monitor.
@@ -17,6 +19,7 @@ public class MainThread extends Thread {
 
     private FileCleaner fileCleaner = new FileCleaner();
     private FileGenerator fileGenerator = new FileGenerator();
+    private Monitor monitor = new Monitor();
 
     /**
      * This method includes the main logic of the EI Monitor.
@@ -43,25 +46,31 @@ public class MainThread extends Thread {
             //Monitor the WSO2 EI server and checking whether there is an incident is happening or not
             while (!incidentHandlerState) {
                 //Get monitor details
-                List<Float> monitorValues = new Monitor().getMonitorDetails();
-
-                log.info("Heap Memory Percentage : " + monitorValues.get(0) * 100 + "% , CPU Memory Percentage : "
-                        + monitorValues.get(1) * 100 + "% , Load Average : " +
-                        monitorValues.get(2) + " , Average Maximum Blocked Time : " + monitorValues.get(3));
+                monitor.setMonitorValues();
+                HashMap monitorValues = monitor.getMonitorValues();
+                log.info("Heap Memory Ratio : " + monitorValues.get("Heap Memory Ratio") + " , CPU Memory Ratio : "
+                        + monitorValues.get("CPU Memory Ratio") + " , Load Average : " + monitorValues.
+                        get("System Load Average") + " , Average Maximum Blocked Time : "
+                        + monitorValues.get("Avg Max Blocked Time"));
 
                 //Check whether there is an incident is happening or not
-                incidentHandlerState = incidentHandler.handleAll(monitorValues);
+                incidentHandler.handleIncident(monitorValues);
+                incidentHandlerState = incidentHandler.getIncidentState();
 
                 try {
-                    MainThread.sleep(Constants.MONITORING_TIME_PERIOD);
+                    int monitoringTimePeriod = Integer.parseInt(Objects.requireNonNull(Properties.getProperty(Constants.
+                            MONITORING_TIME_PERIOD)));
+                    MainThread.sleep(monitoringTimePeriod);
                 } catch (InterruptedException e) {
                     log.error(e.getMessage());
                 }
             }
 
             //Check whether that the incident captured is a real issue or not
-            boolean issueState = incidentHandler.handleIncidentTimePeriod();
-            dataExtractCount += Constants.IncidentHandlerThresholdValues.INCIDENT_TIME_MONITORING_COUNT;
+            boolean issueState = incidentHandler.handleIncidentTimePeriod(monitor);
+            int incidentTimeMonitoringCount = Integer.parseInt(Objects.requireNonNull(Properties.getProperty(Constants.
+                    IncidentHandlerThValues.INCIDENT_TIME_MONITORING_COUNT)));
+            dataExtractCount += incidentTimeMonitoringCount;
             if (issueState) {
                 log.info("An issue has occurred in the system !!!");
                 break;

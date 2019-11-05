@@ -23,15 +23,18 @@ import java.lang.management.OperatingSystemMXBean;
  * This class is used to read the System Load Average.
  */
 public class LoadAverage {
+    private float systemLoadAverage;
 
     /**
-     *This method returns the System Load Average.
-     * @return systemLoadAverage as a float
+     *This method sets the System Load Average.
      */
-    public double getSystemLoadAverage() {
+    public void setSystemLoadAverage() {
         OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
         Object systemLoadAverage = operatingSystemMXBean.getSystemLoadAverage();
 
-        return (double) systemLoadAverage;
+        this.systemLoadAverage = (float) systemLoadAverage;
+    }
+    public float getSystemLoadAverage() {
+        return systemLoadAverage;
     }
 }

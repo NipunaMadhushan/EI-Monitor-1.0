@@ -23,7 +23,7 @@ import java.lang.management.ThreadMXBean;
 /**
  * This class is used to read the thread status.
  */
-public class ThreadStatus {
+class ThreadStatus {
     private float avgMaxBlockedTime;
 
     /**
@@ -32,7 +32,7 @@ public class ThreadStatus {
 
      */
 
-    public void setAvgMaxBlockedTime() {
+    void setAvgMaxBlockedTime() {
         //Get the thread information or all threads
         ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
         threadMXBean.setThreadContentionMonitoringEnabled(true);
@@ -53,7 +53,7 @@ public class ThreadStatus {
 
         this.avgMaxBlockedTime = avgMaxBlockedTime;
     }
-    public float getAvgMaxBlockedTime() {
+    float getAvgMaxBlockedTime() {
         return avgMaxBlockedTime;
     }
 }

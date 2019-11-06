@@ -34,9 +34,9 @@ public class JMXConnection {
 
     /**
      * This method returns the JMX connection for the WSO2 EI server.
-     * @return JMX connection
+     * @return MBean Server Connection
      */
-    public MBeanServerConnection getJMXConnection() {
+    public MBeanServerConnection connectJMX() {
 
         MBeanServerConnection mbeanServerConnection = null;
 

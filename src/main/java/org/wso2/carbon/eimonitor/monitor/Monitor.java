@@ -22,7 +22,7 @@ import java.util.HashMap;
  * This class is used to read all the monitoring values in this tool.
  */
 public class Monitor {
-    private HashMap monitorValues = new HashMap<String, Float>();
+    private HashMap<String, Float> monitorValues = new HashMap<>();
     private HeapMemory heapMemory = new HeapMemory();
     private CPUMemory cpuMemory = new CPUMemory();
     private LoadAverage loadAverage = new LoadAverage();
@@ -47,7 +47,7 @@ public class Monitor {
         float avgMaxBlockedTime = threadStatus.getAvgMaxBlockedTime();
         monitorValues.put("Avg Max Blocked Time", avgMaxBlockedTime);
     }
-    public HashMap getMonitorValues() {
+    public HashMap<String, Float> getMonitorValues() {
         return monitorValues;
     }
 

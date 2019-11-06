@@ -30,7 +30,6 @@ public final class Constants {
         public static final String DATA_EXTRACTING_TIME_PERIOD = "data.extracting.time.period";
     }
 
-
     /**
      * Stores the constants related to the Data Extractor.
      * Contains the directory names and the paths where the extracting data should be stored.
@@ -40,9 +39,7 @@ public final class Constants {
         public static final String HEAP_DUMP_FILE_DIRECTORY = "/Data/Heap Dumps";
         public static final String THREAD_DUMP_FILE_DIRECTORY = "/Data/Thread Dumps";
         public static final String NETWORK_LOAD_FILE_DIRECTORY = "/Data/Network Load";
-        public static final String LOG_FILE_DIRECTORY = BASE_DIRECTORY + "/Data/Logs";
-        public static final String NETWORK_LOAD_FILE_NAME = "networkLoad.txt";
-        public static final String LOG_FILE_NAME = "carbon.log";;
+        public static final String LOG_FILE_DIRECTORY = "/Data/Logs";
     }
 
     /**

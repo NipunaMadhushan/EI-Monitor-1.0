@@ -24,6 +24,7 @@ import org.wso2.carbon.eimonitor.data.extractor.DataExtractor;
 import org.wso2.carbon.eimonitor.monitor.Monitor;
 import java.util.HashMap;
 import java.util.Objects;
+import javax.management.MBeanServerConnection;
 
 /**
  * This class is used to catch an Incident and handle another time period to check whether the incident is a real issue
@@ -44,14 +45,17 @@ public class IncidentHandler {
             getProperty(Constants.IncidentHandlerThValues.INCIDENT_TIME_MONITORING_COUNT)));
 
     private int dataExtractCount;
+    private boolean incidentState;
+    private MBeanServerConnection beanServerConnection;
+
     private float heapRatio;
     private float cpuRatio;
     private float loadAverage;
     private float avgMaxBlockedTime;
-    private boolean incidentState;
 
-    public IncidentHandler(int dataExtractCount) {
+    public IncidentHandler(int dataExtractCount, MBeanServerConnection beanServerConnection) {
         this.dataExtractCount = dataExtractCount;
+        this.beanServerConnection = beanServerConnection;
     }
 
     /**
@@ -73,6 +77,7 @@ public class IncidentHandler {
         if (heapRatio > heapRatioThreshold | cpuRatio > cpuRatioThreshold | loadAverage > loadAverageThreshold |
                 avgMaxBlockedTime > blockedTimeThreshold) {
             this.incidentState = true;
+            log.error("An Incident has been captured");
         } else {
             this.incidentState = false;
         }
@@ -102,7 +107,7 @@ public class IncidentHandler {
             this.avgMaxBlockedTime = (float) monitorValues.get("Avg Max Blocked Time");
 
             dataExtractCount += 1;
-            DataExtractor dataExtractor = new DataExtractor(dataExtractCount);
+            DataExtractor dataExtractor = new DataExtractor(dataExtractCount, beanServerConnection);
             dataExtractor.storeData();
         }
 

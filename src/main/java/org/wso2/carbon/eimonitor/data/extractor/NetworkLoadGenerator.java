@@ -18,6 +18,7 @@ package org.wso2.carbon.eimonitor.data.extractor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.eimonitor.configurations.Properties;
 import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -34,10 +35,16 @@ import javax.management.ReflectionException;
  * This class is used to generate a text file which includes the data related to the network load.
  */
 public class NetworkLoadGenerator {
-
     private static final Log log = LogFactory.getLog(NetworkLoadGenerator.class);
+    private MBeanServerConnection beanServerConnection;
+    private String networkLoadFile = Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY) + Constants.
+            DirectoryNames.NETWORK_LOAD_FILE_DIRECTORY + "/networkLoad.txt";
 
-    public void getNetworkLoad(MBeanServerConnection beanServerConnection) {
+    public NetworkLoadGenerator(MBeanServerConnection beanServerConnection) {
+        this.beanServerConnection = beanServerConnection;
+    }
+
+    public void generateNetworkLoad() {
         try {
             ObjectName sndAttrName = new ObjectName("org.apache.synapse:Type=Transport,Name=passthru-http-sender");
             Object sndMsgsSent = beanServerConnection.getAttribute(sndAttrName, "MessagesSent");
@@ -58,9 +65,9 @@ public class NetworkLoadGenerator {
 
             //writing the network load into a text file
             networkLoadWriter(Calendar.getInstance().getTime() + "  Sender : " + senderNetworkLoad,
-                    Constants.DirectoryNames.NETWORK_LOAD_FILE);
+                    networkLoadFile);
             networkLoadWriter(Calendar.getInstance().getTime() + "  Receiver : " + receiverNetworkLoad,
-                    Constants.DirectoryNames.NETWORK_LOAD_FILE);
+                    networkLoadFile);
 
             log.info("Network Load file is generated !!!");
 

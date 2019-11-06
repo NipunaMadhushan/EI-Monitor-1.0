@@ -16,27 +16,29 @@
 
 package org.wso2.carbon.eimonitor.data.extractor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import javax.management.MBeanServerConnection;
 
 /**
  * This class is used to extract the data.
  */
 public class DataExtractor {
-    private static final Log log = LogFactory.getLog(DataExtractor.class);
     private int dataExtractCount;
+    private MBeanServerConnection beanServerConnection;
 
-    public DataExtractor(int dataExtractCount) {
+    public DataExtractor(int dataExtractCount, MBeanServerConnection beanServerConnection) {
         this.dataExtractCount = dataExtractCount;
+        this.beanServerConnection = beanServerConnection;
     }
     /**
      * This method stores the data of heap dump generator,thread dump generator and the network load generator.
      */
     public void storeData() {
-        HeapDumpGenerator heapDumpGenerator = new HeapDumpGenerator();
-        heapDumpGenerator.getHeapDump(dataExtractCount);
-        ThreadDumpGenerator threadDumpGenerator = new ThreadDumpGenerator();
-        threadDumpGenerator.getThreadDump(dataExtractCount);
+        HeapDumpGenerator heapDumpGenerator = new HeapDumpGenerator(dataExtractCount);
+        heapDumpGenerator.generateHeapDump();
+        ThreadDumpGenerator threadDumpGenerator = new ThreadDumpGenerator(dataExtractCount);
+        threadDumpGenerator.generateThreadDump();
+        NetworkLoadGenerator networkLoadGenerator = new NetworkLoadGenerator(beanServerConnection);
+        networkLoadGenerator.generateNetworkLoad();
         LogExtractor logExtractor = new LogExtractor();
         logExtractor.run();
         logExtractor.logWriter(logExtractor.getLogs());

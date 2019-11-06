@@ -18,6 +18,7 @@ package org.wso2.carbon.eimonitor.data.extractor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.eimonitor.configurations.Properties;
 import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
@@ -30,12 +31,17 @@ import java.lang.management.ThreadMXBean;
 class ThreadDumpGenerator {
 
     private static final Log log = LogFactory.getLog(ThreadDumpGenerator.class);
+    private String threadDumpFileDirectory = Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY)
+            + Constants.DirectoryNames.THREAD_DUMP_FILE_DIRECTORY;
+    private int number;
 
+    ThreadDumpGenerator(int number) {
+        this.number = number;
+    }
     /**
      * This method generates thread dump as string into a string builder.
-     * @param number Thread dump number
      */
-    void getThreadDump(int number) {
+    void generateThreadDump() {
         try {
             //Get the thread details of each threads
             StringBuilder dump = new StringBuilder();
@@ -75,12 +81,8 @@ class ThreadDumpGenerator {
      * @param threadDump Generated thread dump as a string
      */
     private void threadDumpWriter(int number, String threadDump) {
-
-        String threadDumpFileDirectory = Constants.DirectoryNames.THREAD_DUMP_FILE_DIRECTORY;
-
         String fileName = "ThreadDump-" + number + ".txt";
         String dumpFile = threadDumpFileDirectory + "/" + fileName;
-
         try {
             PrintWriter outputStream = new PrintWriter(dumpFile);
             outputStream.println(threadDump);

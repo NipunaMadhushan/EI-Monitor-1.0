@@ -19,6 +19,7 @@ package org.wso2.carbon.eimonitor.data.extractor;
 import com.sun.management.HotSpotDiagnosticMXBean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.eimonitor.configurations.Properties;
 import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -27,21 +28,24 @@ import javax.management.MBeanServer;
 /**
  * This class is used to generate a heap dump.
  */
-public class HeapDumpGenerator {
+class HeapDumpGenerator {
 
     private static final Log log = LogFactory.getLog(HeapDumpGenerator.class);
+    private String heapDumpFileDirectory = Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY) + Constants.
+            DirectoryNames.HEAP_DUMP_FILE_DIRECTORY;
+    private int number;
 
+    HeapDumpGenerator(int number) {
+        this.number = number;
+    }
     /**
      * This method generates a heap dump into the file directory we have configured in the
      * EI_Monitor_Configuration.properties file.
      * Generated file is in .hprof type.
-     * @param number Heap dump number
      */
-    public void getHeapDump(int number) {
+    void generateHeapDump() {
         String fileName = "Heap Dump-" + number + ".hprof";
-        final String heapDumpFileDirectory = Constants.DirectoryNames.HEAP_DUMP_FILE_DIRECTORY;
         String dumpFile = heapDumpFileDirectory + "/" + fileName;
-
         try {
             String hotspotBeanName = "com.sun.management:type=HotSpotDiagnostic";
             MBeanServer server = ManagementFactory.getPlatformMBeanServer();

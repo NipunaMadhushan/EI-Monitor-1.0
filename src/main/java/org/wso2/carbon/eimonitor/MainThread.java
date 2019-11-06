@@ -9,6 +9,7 @@ import org.wso2.carbon.eimonitor.incident.handler.IncidentHandler;
 import org.wso2.carbon.eimonitor.monitor.Monitor;
 import java.util.HashMap;
 import java.util.Objects;
+import javax.management.MBeanServerConnection;
 
 /**
  * This class extends a thread to run the EI_Monitor.
@@ -20,16 +21,21 @@ public class MainThread extends Thread {
     private FileCleaner fileCleaner = new FileCleaner();
     private FileGenerator fileGenerator = new FileGenerator();
     private Monitor monitor = new Monitor();
+    private JMXConnection jmxConnection = new JMXConnection();
 
     /**
      * This method includes the main logic of the EI Monitor.
      */
     @Override
     public void run() {
-        try {
-            MainThread.sleep(60000);
-        } catch (InterruptedException e) {
-            log.error(e.getMessage());
+        MBeanServerConnection beanServerConnection = null;
+        while (beanServerConnection == null) {
+            beanServerConnection = jmxConnection.connectJMX();
+            try {
+                MainThread.sleep(1000);
+            } catch (InterruptedException e) {
+                log.error(e.getMessage());
+            }
         }
 
         int dataExtractCount;
@@ -41,7 +47,7 @@ public class MainThread extends Thread {
 
             dataExtractCount = 0;
             boolean incidentHandlerState = false;
-            IncidentHandler incidentHandler = new IncidentHandler(dataExtractCount);
+            IncidentHandler incidentHandler = new IncidentHandler(dataExtractCount, beanServerConnection);
 
             //Monitor the WSO2 EI server and checking whether there is an incident is happening or not
             while (!incidentHandlerState) {
@@ -81,7 +87,7 @@ public class MainThread extends Thread {
         //Extract the data after identifying an issue has occurred.
         while (true) {
             dataExtractCount += 1;
-            DataExtractor dataExtractor = new DataExtractor(dataExtractCount);
+            DataExtractor dataExtractor = new DataExtractor(dataExtractCount, beanServerConnection);
             dataExtractor.storeData();
         }
     }

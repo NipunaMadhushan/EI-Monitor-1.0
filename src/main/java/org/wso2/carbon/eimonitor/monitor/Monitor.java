@@ -23,32 +23,22 @@ import java.util.HashMap;
  */
 public class Monitor {
     private HashMap<String, Float> monitorValues = new HashMap<>();
-    private HeapMemory heapMemory = new HeapMemory();
-    private CPUMemory cpuMemory = new CPUMemory();
-    private LoadAverage loadAverage = new LoadAverage();
-    private ThreadStatus threadStatus = new ThreadStatus();
 
-    public void setMonitorValues() {
-        monitorValues.clear();
-
-        heapMemory.setHeapMemoryRatio();
-        float heapMemoryRatio = heapMemory.getHeapMemoryRatio();
-        monitorValues.put("Heap Memory Ratio", heapMemoryRatio);
-
-        cpuMemory.setCpuMemoryRatio();
-        float cpuMemoryRatio = cpuMemory.getCpuMemoryRatio();
-        monitorValues.put("CPU Memory Ratio", cpuMemoryRatio);
-
-        loadAverage.setSystemLoadAverage();
-        float systemLoadAverage = loadAverage.getSystemLoadAverage();
-        monitorValues.put("System Load Average", systemLoadAverage);
-
-        threadStatus.setAvgMaxBlockedTime();
-        float avgMaxBlockedTime = threadStatus.getAvgMaxBlockedTime();
-        monitorValues.put("Avg Max Blocked Time", avgMaxBlockedTime);
+    public Monitor() {
+        monitorValues.put("Heap Memory Ratio", (float) 0);
+        monitorValues.put("CPU Memory Ratio", (float) 0);
+        monitorValues.put("System Load Average", (float) 0);
+        monitorValues.put("Avg Max Blocked Time", (float) 0);
     }
-    public HashMap<String, Float> getMonitorValues() {
+
+    public void setMonitorValue(String key, float value) {
+        monitorValues.replace(key, value);
+    }
+    public HashMap<String, Float> getAllMonitorValues() {
         return monitorValues;
     }
 
+    public float getMonitorValue(String key) {
+        return monitorValues.get(key);
+    }
 }

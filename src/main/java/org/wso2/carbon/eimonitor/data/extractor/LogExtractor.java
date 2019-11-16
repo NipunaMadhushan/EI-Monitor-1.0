@@ -20,9 +20,10 @@ import org.apache.commons.io.input.Tailer;
 import org.apache.commons.io.input.TailerListenerAdapter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.eimonitor.MainThread;
+import org.wso2.carbon.eimonitor.initial.EIMonitor;
 import org.wso2.carbon.eimonitor.configurations.Properties;
 import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Objects;
@@ -30,7 +31,7 @@ import java.util.Objects;
 /**
  * This class is used to extract logs from the wso2carbon.log file and write the logs into a text file.
  */
-class LogExtractor {
+public class LogExtractor implements DataExtractor {
     private static final Log log = LogFactory.getLog(LogExtractor.class);
 
     private CarbonLogTailer carbonLogTailer = new CarbonLogTailer();
@@ -47,7 +48,7 @@ class LogExtractor {
      * This method is used to write the log stream we created to a log file in a configurable file directory.
      * @param logStream A string which contains the logs we want to write
      */
-    void logWriter(String logStream) {
+    private void logWriter(String logStream) {
         try {
             FileWriter outputStream = new FileWriter(logFile, true);
             outputStream.write(logStream);
@@ -59,19 +60,30 @@ class LogExtractor {
         }
     }
 
-    void run() {
+    /**
+     * This method runs the tailer and write the logs into a log file.
+     * Then stops the tailer.
+     */
+    @Override
+    public void generateData() {
+        run();
+        logWriter(getLogs());
+        stop();
+    }
+
+    private void run() {
         try {
-            MainThread.sleep(dataExtractingTimePeriod);
+            EIMonitor.sleep(dataExtractingTimePeriod);
         } catch (InterruptedException e) {
             log.error(e.getMessage());
         }
     }
 
-    String getLogs() {
+    private String getLogs() {
         return carbonLogTailer.getCarbonLogs();
     }
 
-    void stop() {
+    private void stop() {
         tailer.stop();
     }
 

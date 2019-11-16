@@ -14,10 +14,13 @@
  *  * limitations under the License.
  */
 
-package org.wso2.carbon.eimonitor;
+package org.wso2.carbon.eimonitor.initial;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * This class can be used to read the configured data in the EI_Monitor_Configurations.properties file in the
@@ -30,7 +33,8 @@ public class Activator implements BundleActivator {
      * @param context is equal to the bundle contest of the class
      */
     public void start(BundleContext context) {
-        Thread thread = new MainThread();
+        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+        Thread thread = new EIMonitor(service);
         thread.start();
     }
 

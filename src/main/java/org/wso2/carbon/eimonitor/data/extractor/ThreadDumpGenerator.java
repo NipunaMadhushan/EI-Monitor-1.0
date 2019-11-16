@@ -24,24 +24,23 @@ import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
+import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * This class is used to generate thread dump as a text file.
  */
-class ThreadDumpGenerator {
+public class ThreadDumpGenerator implements DataExtractor {
 
     private static final Log log = LogFactory.getLog(ThreadDumpGenerator.class);
     private String threadDumpFileDirectory = Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY)
             + Constants.DirectoryNames.THREAD_DUMP_FILE_DIRECTORY;
-    private int number;
 
-    ThreadDumpGenerator(int number) {
-        this.number = number;
-    }
     /**
      * This method generates thread dump as string into a string builder.
      */
-    void generateThreadDump() {
+    @Override
+    public void generateData() {
         try {
             //Get the thread details of each threads
             StringBuilder dump = new StringBuilder();
@@ -68,7 +67,7 @@ class ThreadDumpGenerator {
                 dump.append("\n\n");
             }
             //Write the thread dump into a text file
-            threadDumpWriter(number, dump.toString());
+            threadDumpWriter(dump.toString());
         } catch (Exception e) {
             log.error("Thread dump generation failed !!! " + e.getMessage());
         }
@@ -77,11 +76,12 @@ class ThreadDumpGenerator {
     /**
      * This method writes the thread dump into a text file in the file directory we have configured in the
      * EI_Monitor_Configuration.properties file.
-     * @param number Thread dump number
      * @param threadDump Generated thread dump as a string
      */
-    private void threadDumpWriter(int number, String threadDump) {
-        String fileName = "ThreadDump-" + number + ".txt";
+    private void threadDumpWriter(String threadDump) {
+        Date date = new Date();
+        Timestamp timestamp = new Timestamp(date.getTime());
+        String fileName = "ThreadDump-" + timestamp + ".txt";
         String dumpFile = threadDumpFileDirectory + "/" + fileName;
         try {
             PrintWriter outputStream = new PrintWriter(dumpFile);

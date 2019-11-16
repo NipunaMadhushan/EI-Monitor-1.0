@@ -23,28 +23,29 @@ import org.wso2.carbon.eimonitor.configurations.Properties;
 import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.sql.Timestamp;
+import java.util.Date;
 import javax.management.MBeanServer;
 
 /**
  * This class is used to generate a heap dump.
  */
-class HeapDumpGenerator {
+public class HeapDumpGenerator implements DataExtractor {
 
     private static final Log log = LogFactory.getLog(HeapDumpGenerator.class);
     private String heapDumpFileDirectory = Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY) + Constants.
             DirectoryNames.HEAP_DUMP_FILE_DIRECTORY;
-    private int number;
 
-    HeapDumpGenerator(int number) {
-        this.number = number;
-    }
     /**
      * This method generates a heap dump into the file directory we have configured in the
      * EI_Monitor_Configuration.properties file.
      * Generated file is in .hprof type.
      */
-    void generateHeapDump() {
-        String fileName = "Heap Dump-" + number + ".hprof";
+    @Override
+    public void generateData() {
+        Date date = new Date();
+        Timestamp timestamp = new Timestamp(date.getTime());
+        String fileName = "Heap Dump-" + timestamp + ".hprof";
         String dumpFile = heapDumpFileDirectory + "/" + fileName;
         try {
             String hotspotBeanName = "com.sun.management:type=HotSpotDiagnostic";

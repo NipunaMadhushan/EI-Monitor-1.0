@@ -30,11 +30,12 @@ import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
+import javax.xml.crypto.Data;
 
 /**
  * This class is used to generate a text file which includes the data related to the network load.
  */
-public class NetworkLoadGenerator {
+public class NetworkLoadGenerator implements DataExtractor {
     private static final Log log = LogFactory.getLog(NetworkLoadGenerator.class);
     private MBeanServerConnection beanServerConnection;
     private String networkLoadFile = Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY) + Constants.
@@ -44,7 +45,12 @@ public class NetworkLoadGenerator {
         this.beanServerConnection = beanServerConnection;
     }
 
-    public void generateNetworkLoad() {
+    /**
+     * This method connects to the JMX connection and read the the data related to the synapse transport.
+     * Then the data will be stored into a text file.
+     */
+    @Override
+    public void generateData() {
         try {
             ObjectName sndAttrName = new ObjectName("org.apache.synapse:Type=Transport,Name=passthru-http-sender");
             Object sndMsgsSent = beanServerConnection.getAttribute(sndAttrName, "MessagesSent");

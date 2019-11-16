@@ -22,22 +22,18 @@ import java.lang.management.MemoryMXBean;
 /**
  * This class is used to read Heap Memory.
  */
-class HeapMemory {
-    private float heapMemoryRatio;
-
+public class HeapMemory extends Monitor {
     /**
      *This method sets the Heap Memory Ratio as a ratio of used heap memory to committed heap memory at an instance
      *time.
+     * @return ratio of used heap memory to the committed heap memory
      */
-    void setHeapMemoryRatio() {
+    public float heapMemoryRatio() {
         MemoryMXBean memoryMXBeanProxy = ManagementFactory.getMemoryMXBean();
 
         //Calculate heap memory ratio
         float usedHeapMemory = (float) memoryMXBeanProxy.getHeapMemoryUsage().getUsed();
         float committedHeapMemory = (float) memoryMXBeanProxy.getHeapMemoryUsage().getCommitted();
-        this.heapMemoryRatio = usedHeapMemory / committedHeapMemory;
-    }
-    float getHeapMemoryRatio() {
-        return heapMemoryRatio;
+        return usedHeapMemory / committedHeapMemory;
     }
 }

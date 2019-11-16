@@ -61,7 +61,7 @@
                         </Private-Package>
                         <Import-Package>org.osgi.framework.*,org.osgi.service.*</Import-Package>
                         <Export-Package>org.wso2.carbon.eimonitor.*</Export-Package>
-                        <Bundle-Activator>org.wso2.carbon.eimonitor.Activator</Bundle-Activator>
+                        <Bundle-Activator>org.wso2.carbon.eimonitor.initial.Activator</Bundle-Activator>
                     </instructions>
                 </configuration>
             </plugin>

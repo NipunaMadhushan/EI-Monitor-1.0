@@ -18,6 +18,7 @@ package org.wso2.carbon.eimonitor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.eimonitor.configurations.Properties;
 import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
 
 import java.io.File;
@@ -37,7 +38,7 @@ public class FileGenerator {
      * @param baseDirectory Directory path where the user want to to create the new directory
      * @param directoryName Name of the directory which the user is going to create
      */
-    public void generateDirectory(String baseDirectory, String directoryName) {
+    private void generateDirectory(String baseDirectory, String directoryName) {
         File file = new File(baseDirectory + "/" + directoryName);
         file.mkdir();
     }
@@ -49,7 +50,7 @@ public class FileGenerator {
      * @param directory Directory path where the user want to create new text file
      * @param filename Name of the text file which the user is going to create
      */
-    public void generateTextFile(String directory, String filename) {
+    private void generateTextFile(String directory, String filename) {
         try {
             String fileDirectory = directory + "/" + filename;
             File file = new File(fileDirectory);
@@ -65,17 +66,17 @@ public class FileGenerator {
     public void generateAllDirectories() {
         FileGenerator fileGenerator = new FileGenerator();
         fileGenerator.generateDirectory(Constants.DirectoryNames.BASE_DIRECTORY, "Data");
-        fileGenerator.generateDirectory(Constants.DirectoryNames.BASE_DIRECTORY + "/Data",
-                "Heap Dumps");
-        fileGenerator.generateDirectory(Constants.DirectoryNames.BASE_DIRECTORY + "/Data",
-                "Thread Dumps");
-        fileGenerator.generateDirectory(Constants.DirectoryNames.BASE_DIRECTORY + "/Data",
-                "Network Load");
-        fileGenerator.generateDirectory(Constants.DirectoryNames.BASE_DIRECTORY + "/Data",
-                "Logs");
-        fileGenerator.generateTextFile(Constants.DirectoryNames.NETWORK_LOAD_FILE_DIRECTORY,
-                Constants.DirectoryNames.NETWORK_LOAD_FILE_NAME);
-        fileGenerator.generateTextFile(Constants.DirectoryNames.LOG_FILE_DIRECTORY,
-                Constants.DirectoryNames.LOG_FILE_NAME);
+        fileGenerator.generateDirectory(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY)
+                + "/Data", "Heap Dumps");
+        fileGenerator.generateDirectory(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY)
+                + "/Data", "Thread Dumps");
+        fileGenerator.generateDirectory(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY)
+                + "/Data", "Network Load");
+        fileGenerator.generateDirectory(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY)
+                + "/Data", "Logs");
+        fileGenerator.generateTextFile(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY)
+                + Constants.DirectoryNames.NETWORK_LOAD_FILE_DIRECTORY, "networkLoad.txt");
+        fileGenerator.generateTextFile(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY)
+                + Constants.DirectoryNames.NETWORK_LOAD_FILE_DIRECTORY, "carbon.log");
     }
 }

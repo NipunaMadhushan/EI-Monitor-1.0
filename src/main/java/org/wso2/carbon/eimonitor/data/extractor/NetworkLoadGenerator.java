@@ -30,7 +30,6 @@ import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
-import javax.xml.crypto.Data;
 
 /**
  * This class is used to generate a text file which includes the data related to the network load.

@@ -16,6 +16,11 @@
 
 package org.wso2.carbon.eimonitor.monitor;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.eimonitor.configurations.Properties;
+import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
+
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
@@ -23,14 +28,16 @@ import java.lang.management.ThreadMXBean;
 /**
  * This class is used to read the thread status.
  */
-public class ThreadStatus extends Monitor {
+public class ThreadStatusMonitor implements Monitor {
+
+    private static final Log log = LogFactory.getLog(ThreadStatusMonitor.class);
+
     /**
      * This method returns the Maximum Blocked Time among all threads.
      * It will check the block times of all the threads and find the maximum block time.
      * @return ratio of maximum blocked time to the total time of thread among all threads.
      */
-
-    public float avgMaxBlockedTime() {
+    public float getMonitorValue() {
         //Get the thread information or all threads
         ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
         threadMXBean.setThreadContentionMonitoringEnabled(true);
@@ -50,5 +57,28 @@ public class ThreadStatus extends Monitor {
         }
 
         return avgMaxBlockedTime;
+    }
+
+    public float getThresholdValue() {
+        Object blockTimeThreshold = Properties.getProperty(Constants.IncidentHandlerThValues.BLOCK_TIME_THRESHOLD);
+        if (blockTimeThreshold instanceof Float) {
+            return (float) blockTimeThreshold;
+        } else {
+            log.error(Constants.IncidentHandlerThValues.BLOCK_TIME_THRESHOLD
+                    + " property has been defined incorrectly in the properties file.");
+            return Float.parseFloat(null);
+        }
+    }
+
+    public boolean checkMonitorValue() {
+        float monitorValue = getMonitorValue();
+        float thresholdValue = getThresholdValue();
+
+        if (monitorValue >= thresholdValue) {
+            log.error("An incident has been captured... Average Maximum Block Time has gone over threshold value..");
+            return true;
+        } else {
+            return false;
+        }
     }
 }

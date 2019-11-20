@@ -18,9 +18,9 @@ package org.wso2.carbon.eimonitor.initial;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class can be used to read the configured data in the EI_Monitor_Configurations.properties file in the
@@ -34,8 +34,8 @@ public class Activator implements BundleActivator {
      */
     public void start(BundleContext context) {
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-        Thread thread = new EIMonitor(service);
-        thread.start();
+        Scheduler scheduler = new Scheduler();
+        service.scheduleAtFixedRate(scheduler, 0, 10, TimeUnit.MILLISECONDS);
     }
 
     /**

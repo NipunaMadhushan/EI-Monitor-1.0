@@ -20,12 +20,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * This class is used to read the configured data in EI_Monitor_Configurations.properties file in the ${EI_HOME}/conf
  * directory.
  */
-public class Properties {
+public final class Properties {
 
     private static final Log log = LogFactory.getLog(Properties.class);
     private static String baseDirectory = System.getProperty("user.dir");
@@ -34,21 +35,35 @@ public class Properties {
      * This method returns the value of the property which has been configured in the
      * EI_Monitor_Configurations.properties file.
      * EI_Monitor_Configurations.properties file should be in the directory of ${carbon.home}/conf .
-     * @param property Property name in the EI_Monitor_Configurations.properties which we need
+     * @param key Property name in the EI_Monitor_Configurations.properties which we need
      * @return propertyValue of the property we want to return
      */
-    public static String getProperty(String property) {
+    public static Object getProperty(String key) {
         try {
             java.util.Properties properties = new java.util.Properties();
             String fileName = baseDirectory + "/conf/EI-Monitor-Configurations.properties";
             FileInputStream file = new FileInputStream(fileName);
             properties.load(file);
 
-            return properties.getProperty(property);
+            return properties.getProperty(key);
 
-        } catch (IOException e) {
+        } catch (IOException | ClassCastException e) {
             log.error("Failed to read configurations !!! " + e.getMessage());
+            return null;
         }
-        return null;
+    }
+
+    private static boolean isFloat(String value) {
+        try {
+            Float.parseFloat(value);
+            return true;
+        }
+        catch( Exception e ) {
+            return false;
+        }
+    }
+
+    private static boolean isNumeric(String value) {
+        return value.matches("-?\\d+(\\.\\d+)?");
     }
 }

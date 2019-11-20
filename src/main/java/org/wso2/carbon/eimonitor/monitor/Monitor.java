@@ -16,29 +16,11 @@
 
 package org.wso2.carbon.eimonitor.monitor;
 
-import java.util.HashMap;
-
 /**
- * This class is used to read all the monitoring values in this tool.
+ * This interface is the model of all the monitors.
  */
-public class Monitor {
-    private HashMap<String, Float> monitorValues = new HashMap<>();
-
-    public Monitor() {
-        monitorValues.put("Heap Memory Ratio", (float) 0);
-        monitorValues.put("CPU Memory Ratio", (float) 0);
-        monitorValues.put("System Load Average", (float) 0);
-        monitorValues.put("Avg Max Blocked Time", (float) 0);
-    }
-
-    public void setMonitorValue(String key, float value) {
-        monitorValues.replace(key, value);
-    }
-    public HashMap<String, Float> getAllMonitorValues() {
-        return monitorValues;
-    }
-
-    public float getMonitorValue(String key) {
-        return monitorValues.get(key);
-    }
+public interface Monitor {
+    public float getMonitorValue();
+    public float getThresholdValue();
+    public boolean checkMonitorValue();
 }

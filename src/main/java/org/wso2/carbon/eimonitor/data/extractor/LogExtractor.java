@@ -20,13 +20,11 @@ import org.apache.commons.io.input.Tailer;
 import org.apache.commons.io.input.TailerListenerAdapter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.eimonitor.initial.EIMonitor;
 import org.wso2.carbon.eimonitor.configurations.Properties;
 import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
-
 import java.io.File;
 import java.io.FileWriter;
-import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class is used to extract logs from the wso2carbon.log file and write the logs into a text file.
@@ -41,8 +39,18 @@ public class LogExtractor implements DataExtractor {
     private Tailer tailer = Tailer.create(carbonLogFile, carbonLogTailer, sleep, true);
     private String logFile = Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY) + Constants.DirectoryNames.
             LOG_FILE_DIRECTORY + "/carbon.log";
-    private int dataExtractingTimePeriod = Integer.parseInt(Objects.requireNonNull(Properties.getProperty(Constants.
-            DataExtractThValues.DATA_EXTRACTING_TIME_PERIOD)));
+    private int dataExtractingTimePeriod;
+
+    public LogExtractor() {
+        Object dataExtractingTimePeriod = Properties.getProperty(Constants.DataExtractThValues.
+                DATA_EXTRACTING_TIME_PERIOD);
+        if (dataExtractingTimePeriod instanceof Integer) {
+            this.dataExtractingTimePeriod = (int) dataExtractingTimePeriod;
+        } else {
+            log.error(Constants.DataExtractThValues.DATA_EXTRACTING_TIME_PERIOD
+                    + " property has been defined incorrectly");
+        }
+    }
 
     /**
      * This method is used to write the log stream we created to a log file in a configurable file directory.
@@ -73,7 +81,7 @@ public class LogExtractor implements DataExtractor {
 
     private void run() {
         try {
-            EIMonitor.sleep(dataExtractingTimePeriod);
+            TimeUnit.MILLISECONDS.sleep(dataExtractingTimePeriod);
         } catch (InterruptedException e) {
             log.error(e.getMessage());
         }

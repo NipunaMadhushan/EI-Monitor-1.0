@@ -17,17 +17,25 @@
 package org.wso2.carbon.eimonitor.monitor;
 
 import com.sun.management.OperatingSystemMXBean;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.eimonitor.configurations.Properties;
+import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
+
 import java.lang.management.ManagementFactory;
 
 /**
  * This class is used to read CPUMemory.
  */
-public class CPUMemory extends Monitor {
+public class CPUMemoryMonitor implements Monitor {
+
+    private static final Log log = LogFactory.getLog(CPUMemoryMonitor.class);
+
     /**
      * This method sets the CPU Memory Ratio as a ratio of used CPU memory to total CPU memory at an instance time.
      * @return ratio of used cpu memory to the total cpu memory
      */
-    public float cpuMemoryRatio() {
+    public float getMonitorValue() {
         OperatingSystemMXBean operatingSystemMXBean =
                 (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
         //Calculate the CPU memory ratio
@@ -37,4 +45,26 @@ public class CPUMemory extends Monitor {
         return  (float) freeMemory / (float) totalMemory;
     }
 
+    public float getThresholdValue() {
+        Object cpuRatioThreshold = Properties.getProperty(Constants.IncidentHandlerThValues.CPU_RATIO_THRESHOLD);
+        if (cpuRatioThreshold instanceof Float) {
+            return (float) cpuRatioThreshold;
+        } else {
+            log.error(Constants.IncidentHandlerThValues.CPU_RATIO_THRESHOLD
+                    + " property has been defined incorrectly in the properties file.");
+            return Float.parseFloat(null);
+        }
+    }
+
+    public boolean checkMonitorValue() {
+        float monitorValue = getMonitorValue();
+        float thresholdValue = getThresholdValue();
+
+        if (monitorValue >= thresholdValue) {
+            log.error("An incident has been captured... CPU Memory has gone over threshold value..");
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

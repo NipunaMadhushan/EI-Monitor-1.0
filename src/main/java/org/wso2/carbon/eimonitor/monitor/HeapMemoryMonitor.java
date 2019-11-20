@@ -16,24 +16,54 @@
 
 package org.wso2.carbon.eimonitor.monitor;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.eimonitor.configurations.Properties;
+import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 
 /**
  * This class is used to read Heap Memory.
  */
-public class HeapMemory extends Monitor {
+public class HeapMemoryMonitor implements Monitor {
+
+    private static final Log log = LogFactory.getLog(HeapMemoryMonitor.class);
+
     /**
      *This method sets the Heap Memory Ratio as a ratio of used heap memory to committed heap memory at an instance
      *time.
      * @return ratio of used heap memory to the committed heap memory
      */
-    public float heapMemoryRatio() {
+    public float getMonitorValue() {
         MemoryMXBean memoryMXBeanProxy = ManagementFactory.getMemoryMXBean();
 
         //Calculate heap memory ratio
         float usedHeapMemory = (float) memoryMXBeanProxy.getHeapMemoryUsage().getUsed();
         float committedHeapMemory = (float) memoryMXBeanProxy.getHeapMemoryUsage().getCommitted();
         return usedHeapMemory / committedHeapMemory;
+    }
+
+    public float getThresholdValue() {
+        Object heapRatioThreshold = Properties.getProperty(Constants.IncidentHandlerThValues.HEAP_RATIO_THRESHOLD);
+        if (heapRatioThreshold instanceof Float) {
+            return (float) heapRatioThreshold;
+        } else {
+            log.error(Constants.IncidentHandlerThValues.HEAP_RATIO_THRESHOLD
+                    + " property has been defined incorrectly in the properties file.");
+            return Float.parseFloat(null);
+        }
+    }
+
+    public boolean checkMonitorValue() {
+        float monitorValue = getMonitorValue();
+        float thresholdValue = getThresholdValue();
+
+        if (monitorValue >= thresholdValue) {
+            log.error("An incident has been captured... Heap Memory has gone over threshold value..");
+            return true;
+        } else {
+            return false;
+        }
     }
 }

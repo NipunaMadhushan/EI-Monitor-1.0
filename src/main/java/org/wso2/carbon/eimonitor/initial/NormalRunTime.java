@@ -60,6 +60,7 @@ public class NormalRunTime extends Thread {
         }
         //Clean the file directories of data
         fileCleaner.cleanDirectory(Constants.DirectoryNames.BASE_DIRECTORY + "/Data");
+
         //Generate the file directories of data
         fileGenerator.generateAllDirectories();
 

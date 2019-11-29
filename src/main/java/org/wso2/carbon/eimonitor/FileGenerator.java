@@ -64,18 +64,19 @@ public class FileGenerator {
      */
     public void generateAllDirectories() {
         FileGenerator fileGenerator = new FileGenerator();
-        fileGenerator.generateDirectory(Constants.DirectoryNames.BASE_DIRECTORY, "Data");
-        fileGenerator.generateDirectory(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY)
-                + "/Data", "Heap Dumps");
-        fileGenerator.generateDirectory(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY)
-                + "/Data", "Thread Dumps");
-        fileGenerator.generateDirectory(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY)
-                + "/Data", "Network Load");
-        fileGenerator.generateDirectory(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY)
-                + "/Data", "Logs");
-        fileGenerator.generateTextFile(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY)
-                + Constants.DirectoryNames.NETWORK_LOAD_FILE_DIRECTORY, "networkLoad.txt");
-        fileGenerator.generateTextFile(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY)
-                + Constants.DirectoryNames.NETWORK_LOAD_FILE_DIRECTORY, "carbon.log");
+        fileGenerator.generateDirectory((String) Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY
+                , String.class.getName()), "Data");
+        fileGenerator.generateDirectory(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY
+                , String.class.getName()) + "/Data", "Heap Dumps");
+        fileGenerator.generateDirectory(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY
+                , String.class.getName()) + "/Data", "Thread Dumps");
+        fileGenerator.generateDirectory(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY
+                , String.class.getName()) + "/Data", "Network Load");
+        fileGenerator.generateDirectory(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY
+                , String.class.getName()) + "/Data", "Logs");
+        fileGenerator.generateTextFile(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY, String
+                .class.getName()) + Constants.DirectoryNames.NETWORK_LOAD_FILE_DIRECTORY, "networkLoad.txt");
+        fileGenerator.generateTextFile(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY, String
+                .class.getName()) + Constants.DirectoryNames.NETWORK_LOAD_FILE_DIRECTORY, "carbon.log");
     }
 }

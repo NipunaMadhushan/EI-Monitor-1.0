@@ -22,5 +22,5 @@ package org.wso2.carbon.eimonitor.monitor;
 public interface Monitor {
     public float getMonitorValue();
     public float getThresholdValue();
-    public boolean checkMonitorValue();
+    public boolean isMonitorValueHealthy();
 }

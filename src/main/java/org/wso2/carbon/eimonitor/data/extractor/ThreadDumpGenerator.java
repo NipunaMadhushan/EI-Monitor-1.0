@@ -33,14 +33,29 @@ import java.util.Date;
 public class ThreadDumpGenerator implements DataExtractor {
 
     private static final Log log = LogFactory.getLog(ThreadDumpGenerator.class);
-    private String threadDumpFileDirectory = Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY)
-            + Constants.DirectoryNames.THREAD_DUMP_FILE_DIRECTORY;
+    private String threadDumpFileDirectory = Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY, String
+            .class.getName()) + Constants.DirectoryNames.THREAD_DUMP_FILE_DIRECTORY;
 
+    private static final DataExtractor DATA_EXTRACTOR;
+
+    private ThreadDumpGenerator(){}
+
+    //static block initialization for exception handling
+    static {
+        try {
+            DATA_EXTRACTOR = new ThreadDumpGenerator();
+        } catch (Exception e) {
+            throw new RuntimeException("Exception occurred in creating singleton instance");
+        }
+    }
+
+    public static DataExtractor getInstance() {
+        return DATA_EXTRACTOR;
+    }
     /**
      * This method generates thread dump as string into a string builder.
      */
-    @Override
-    public void generateData() {
+    public void extractData() {
         try {
             //Get the thread details of each threads
             StringBuilder dump = new StringBuilder();

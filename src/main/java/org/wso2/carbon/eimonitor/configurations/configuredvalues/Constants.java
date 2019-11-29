@@ -21,14 +21,6 @@ package org.wso2.carbon.eimonitor.configurations.configuredvalues;
  * ${EI_HOME}/conf.
  */
 public final class Constants {
-    public static final String MONITORING_TIME_PERIOD = "monitoring.time.period";
-
-    /**
-     * Stores the constants related to the Data Extractor.
-     */
-    public static class DataExtractThValues {
-        public static final String DATA_EXTRACTING_TIME_PERIOD = "data.extracting.time.period";
-    }
 
     /**
      * Stores the constants related to the Data Extractor.
@@ -43,13 +35,22 @@ public final class Constants {
     }
 
     /**
-     * Stores the constants related to the Incident Handler.
+     * Stores the constants related to the Monitoring process.
      */
-    public static class IncidentHandlerThValues {
+    public static class Threshold {
         public static final String HEAP_RATIO_THRESHOLD = "heap.ratio.threshold";
         public static final String CPU_RATIO_THRESHOLD = "cpu.ratio.threshold";
         public static final String LOAD_AVERAGE_THRESHOLD = "load.average.threshold";
         public static final String BLOCK_TIME_THRESHOLD = "blocked.time.threshold";
+    }
+
+    /**
+     * Stores the constants related to the Thread Scheduling process.
+     */
+    public static class TimePeriod {
+        public static final String INCIDENT_HANDLER_TIME_PERIOD = "incident.handler.time.period";
+        public static final String MONITORING_TIME_PERIOD = "monitoring.time.period";
+        public static final String DATA_EXTRACTING_TIME_PERIOD = "data.extracting.time.period";
         public static final String INCIDENT_TIME_MONITORING_COUNT = "data.extracting.count.threshold";
     }
 }

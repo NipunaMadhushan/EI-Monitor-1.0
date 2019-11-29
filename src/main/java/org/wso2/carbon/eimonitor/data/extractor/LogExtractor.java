@@ -37,19 +37,28 @@ public class LogExtractor implements DataExtractor {
     private String baseDirectory = System.getProperty("user.dir");
     private File carbonLogFile = new File(baseDirectory + "/repository/logs/wso2carbon.log");
     private Tailer tailer = Tailer.create(carbonLogFile, carbonLogTailer, sleep, true);
-    private String logFile = Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY) + Constants.DirectoryNames.
-            LOG_FILE_DIRECTORY + "/carbon.log";
-    private int dataExtractingTimePeriod;
+    private String logFile = Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY, String.class.getName())
+            + Constants.DirectoryNames.LOG_FILE_DIRECTORY + "/carbon.log";
+    private int dataExtractingTimePeriod = (int) Properties.getProperty(Constants.TimePeriod
+            .DATA_EXTRACTING_TIME_PERIOD, Integer.class.getName());
 
-    public LogExtractor() {
-        Object dataExtractingTimePeriod = Properties.getProperty(Constants.DataExtractThValues.
-                DATA_EXTRACTING_TIME_PERIOD);
-        if (dataExtractingTimePeriod instanceof Integer) {
-            this.dataExtractingTimePeriod = (int) dataExtractingTimePeriod;
-        } else {
-            log.error(Constants.DataExtractThValues.DATA_EXTRACTING_TIME_PERIOD
-                    + " property has been defined incorrectly");
+
+
+    private static final DataExtractor DATA_EXTRACTOR;
+
+    private LogExtractor(){}
+
+    //static block initialization for exception handling
+    static {
+        try {
+            DATA_EXTRACTOR = new LogExtractor();
+        } catch (Exception e) {
+            throw new RuntimeException("Exception occurred in creating singleton instance");
         }
+    }
+
+    public static DataExtractor getInstance() {
+        return DATA_EXTRACTOR;
     }
 
     /**
@@ -72,8 +81,7 @@ public class LogExtractor implements DataExtractor {
      * This method runs the tailer and write the logs into a log file.
      * Then stops the tailer.
      */
-    @Override
-    public void generateData() {
+    public void extractData() {
         run();
         logWriter(getLogs());
         stop();

@@ -30,29 +30,40 @@ public class LoadAverageMonitor implements Monitor {
 
     private static final Log log = LogFactory.getLog(LoadAverageMonitor.class);
 
+    private static final Monitor MONITOR;
+
+    private LoadAverageMonitor(){}
+
+    //static block initialization for exception handling
+    static {
+        try {
+            MONITOR = new LoadAverageMonitor();
+        } catch (Exception e) {
+            throw new RuntimeException("Exception occurred in creating singleton instance");
+        }
+    }
+
+    public static Monitor getInstance() {
+        return MONITOR;
+    }
+
+
     /**
      *This method sets the System Load Average.
      * @return system load average
      */
     public float getMonitorValue() {
         OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
-        Object systemLoadAverage = operatingSystemMXBean.getSystemLoadAverage();
+        double systemLoadAverage = operatingSystemMXBean.getSystemLoadAverage();
 
         return (float) systemLoadAverage;
     }
 
     public float getThresholdValue() {
-        Object loadAverageThreshold = Properties.getProperty(Constants.IncidentHandlerThValues.LOAD_AVERAGE_THRESHOLD);
-        if (loadAverageThreshold instanceof Float) {
-            return (float) loadAverageThreshold;
-        } else {
-            log.error(Constants.IncidentHandlerThValues.LOAD_AVERAGE_THRESHOLD
-                    + " property has been defined incorrectly in the properties file.");
-            return Float.parseFloat(null);
-        }
+        return (float) Properties.getProperty(Constants.Threshold.LOAD_AVERAGE_THRESHOLD, Float.class.getName());
     }
 
-    public boolean checkMonitorValue() {
+    public boolean isMonitorValueHealthy() {
         float monitorValue = getMonitorValue();
         float thresholdValue = getThresholdValue();
 

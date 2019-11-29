@@ -20,7 +20,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Objects;
 
 /**
  * This class is used to read the configured data in EI_Monitor_Configurations.properties file in the ${EI_HOME}/conf
@@ -36,34 +35,45 @@ public final class Properties {
      * EI_Monitor_Configurations.properties file.
      * EI_Monitor_Configurations.properties file should be in the directory of ${carbon.home}/conf .
      * @param key Property name in the EI_Monitor_Configurations.properties which we need
+     * @param dataType return data type of the property we need
      * @return propertyValue of the property we want to return
      */
-    public static Object getProperty(String key) {
+    public static Object getProperty(String key, String dataType) {
         try {
             java.util.Properties properties = new java.util.Properties();
             String fileName = baseDirectory + "/conf/EI-Monitor-Configurations.properties";
             FileInputStream file = new FileInputStream(fileName);
             properties.load(file);
 
-            return properties.getProperty(key);
+            String property = properties.getProperty(key);
 
-        } catch (IOException | ClassCastException e) {
+            if (isInteger(dataType)) {
+                return Integer.valueOf(property);
+            } else if (isFloat(dataType)) {
+                return Float.valueOf(property);
+            } else if (isLong(dataType)) {
+                return Long.valueOf(property);
+            } else {
+                return property;
+            }
+        } catch (IOException e) {
             log.error("Failed to read configurations !!! " + e.getMessage());
+            return null;
+        } catch (ClassCastException e) {
+            log.error(key + " property has been configured incorrectly" + e.getMessage());
             return null;
         }
     }
 
-    private static boolean isFloat(String value) {
-        try {
-            Float.parseFloat(value);
-            return true;
-        }
-        catch( Exception e ) {
-            return false;
-        }
+    private static boolean isFloat(String dataType) {
+        return dataType.equals(Float.class.getName());
     }
 
-    private static boolean isNumeric(String value) {
-        return value.matches("-?\\d+(\\.\\d+)?");
+    private static boolean isInteger(String dataType) {
+        return dataType.equals(Integer.class.getName());
+    }
+
+    private static boolean isLong(String dataType) {
+        return dataType.equals(Long.class.getName());
     }
 }

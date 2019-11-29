@@ -16,11 +16,9 @@
 
 package org.wso2.carbon.eimonitor.data.extractor;
 
-import javax.management.MBeanServerConnection;
-
 /**
  * This interface is used to extract the data.
  */
 public interface DataExtractor {
-    public void generateData();
+    public void extractData();
 }

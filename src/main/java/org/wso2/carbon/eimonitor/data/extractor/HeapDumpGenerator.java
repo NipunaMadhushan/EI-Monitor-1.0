@@ -33,16 +33,34 @@ import javax.management.MBeanServer;
 public class HeapDumpGenerator implements DataExtractor {
 
     private static final Log log = LogFactory.getLog(HeapDumpGenerator.class);
-    private String heapDumpFileDirectory = Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY) + Constants.
-            DirectoryNames.HEAP_DUMP_FILE_DIRECTORY;
+    private String heapDumpFileDirectory = Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY, String
+            .class.getName()) + Constants.DirectoryNames.HEAP_DUMP_FILE_DIRECTORY;
+
+
+    private static final DataExtractor DATA_EXTRACTOR;
+
+    private HeapDumpGenerator(){}
+
+    //static block initialization for exception handling
+    static {
+        try {
+            DATA_EXTRACTOR = new HeapDumpGenerator();
+        } catch (Exception e) {
+            throw new RuntimeException("Exception occurred in creating singleton instance");
+        }
+    }
+
+    public static DataExtractor getInstance() {
+        return DATA_EXTRACTOR;
+    }
+
 
     /**
      * This method generates a heap dump into the file directory we have configured in the
      * EI_Monitor_Configuration.properties file.
      * Generated file is in .hprof type.
      */
-    @Override
-    public void generateData() {
+    public void extractData() {
         Date date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         String fileName = "Heap Dump-" + timestamp + ".hprof";

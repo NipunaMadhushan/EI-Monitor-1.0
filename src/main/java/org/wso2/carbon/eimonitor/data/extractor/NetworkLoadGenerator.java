@@ -36,20 +36,34 @@ import javax.management.ReflectionException;
  */
 public class NetworkLoadGenerator implements DataExtractor {
     private static final Log log = LogFactory.getLog(NetworkLoadGenerator.class);
-    private MBeanServerConnection beanServerConnection;
-    private String networkLoadFile = Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY) + Constants.
-            DirectoryNames.NETWORK_LOAD_FILE_DIRECTORY + "/networkLoad.txt";
+    private static MBeanServerConnection beanServerConnection;
+    private String networkLoadFile = Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY, String.class
+            .getName()) + Constants.DirectoryNames.NETWORK_LOAD_FILE_DIRECTORY + "/networkLoad.txt";
 
     public NetworkLoadGenerator(MBeanServerConnection beanServerConnection) {
-        this.beanServerConnection = beanServerConnection;
+        NetworkLoadGenerator.beanServerConnection = beanServerConnection;
+    }
+
+    private static final DataExtractor DATA_EXTRACTOR;
+
+    //static block initialization for exception handling
+    static {
+        try {
+            DATA_EXTRACTOR = new NetworkLoadGenerator(beanServerConnection);
+        } catch (Exception e) {
+            throw new RuntimeException("Exception occurred in creating singleton instance");
+        }
+    }
+
+    public static DataExtractor getInstance() {
+        return DATA_EXTRACTOR;
     }
 
     /**
      * This method connects to the JMX connection and read the the data related to the synapse transport.
      * Then the data will be stored into a text file.
      */
-    @Override
-    public void generateData() {
+    public void extractData() {
         try {
             ObjectName sndAttrName = new ObjectName("org.apache.synapse:Type=Transport,Name=passthru-http-sender");
             Object sndMsgsSent = beanServerConnection.getAttribute(sndAttrName, "MessagesSent");

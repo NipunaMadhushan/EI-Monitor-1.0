@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WSO2 Enterprise Integrator Monitor</title>
+</head>
+<style>
+    canvas{
+        border: 2px dashed #333;
+    }
+</style>
+<body style="background-color: khaki">
+    <p><img src="/home/nipuna/Desktop/wso2-logo.png" style="float:right;width:350px;height:200px;"></p>
+    <h1 style="font-size:60px;color: brown;font-style: oblique">WSO2 Enterprise Integrator Monitor</h1>
+    <pre style="font-size: 20px;font-style: inherit">
+    WSO2 Enterprise Integrator Monitor is a tool that can be used to monitor an instance of Enterprise Integrator(EI)
+    and find the reason for an issue occur in the EI. When an issue occurs in a production server, to investigate
+    the incident, we need to fetch several information from the server instance. This tool automatically extracts useful
+    information from the server when there are potential issues.
+    </pre>
+
+    <p style="font-size: 20px">The Monitored details regarding the last issue is as follows.</p>
+
+    <h4>Heap Memory</h4>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        var dataList = [['Time', 'Heap Memory Ratio', 'Threshold'],
+            ['2013',  0.8,      0.5],
+            ['2014',  0.5,      0.5],
+            ['2015',  0.7,       0.5],
+            ['2016',  0.6,      0.5]];
+        dataList.push(['2017',  0.6,      0.5]);
+
+        function drawChart() {
+
+            var data = google.visualization.arrayToDataTable(dataList);
+
+            var options = {
+                title: 'Heap Memory',
+                hAxis: {title: 'Time',  titleTextStyle: {color: '#333'}},
+                vAxis: {minValue: 0, maxValue: 1}
+            };
+
+            var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+
+    </script>
+    <div id="chart_div" style="width: 1000px; height: 500px;"></div>
+    <h4>CPU Memory</h4>
+    <h4>LoadAverage</h4>
+    <h4>ThreadStatus</h4>
+</body>
+</html>

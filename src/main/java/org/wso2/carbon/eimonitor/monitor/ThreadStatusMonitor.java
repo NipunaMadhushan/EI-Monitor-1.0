@@ -32,6 +32,24 @@ public class ThreadStatusMonitor implements Monitor {
 
     private static final Log log = LogFactory.getLog(ThreadStatusMonitor.class);
 
+    private static final Monitor MONITOR;
+
+    private ThreadStatusMonitor(){}
+
+    //static block initialization for exception handling
+    static {
+        try {
+            MONITOR = new ThreadStatusMonitor();
+        } catch (Exception e) {
+            throw new RuntimeException("Exception occurred in creating singleton instance");
+        }
+    }
+
+    public static Monitor getInstance() {
+        return MONITOR;
+    }
+
+
     /**
      * This method returns the Maximum Blocked Time among all threads.
      * It will check the block times of all the threads and find the maximum block time.
@@ -60,17 +78,10 @@ public class ThreadStatusMonitor implements Monitor {
     }
 
     public float getThresholdValue() {
-        Object blockTimeThreshold = Properties.getProperty(Constants.IncidentHandlerThValues.BLOCK_TIME_THRESHOLD);
-        if (blockTimeThreshold instanceof Float) {
-            return (float) blockTimeThreshold;
-        } else {
-            log.error(Constants.IncidentHandlerThValues.BLOCK_TIME_THRESHOLD
-                    + " property has been defined incorrectly in the properties file.");
-            return Float.parseFloat(null);
-        }
+        return (float) Properties.getProperty(Constants.Threshold.BLOCK_TIME_THRESHOLD, Float.class.getName());
     }
 
-    public boolean checkMonitorValue() {
+    public boolean isMonitorValueHealthy() {
         float monitorValue = getMonitorValue();
         float thresholdValue = getThresholdValue();
 

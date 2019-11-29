@@ -21,7 +21,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.eimonitor.configurations.Properties;
 import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
-
 import java.lang.management.ManagementFactory;
 
 /**
@@ -30,6 +29,24 @@ import java.lang.management.ManagementFactory;
 public class CPUMemoryMonitor implements Monitor {
 
     private static final Log log = LogFactory.getLog(CPUMemoryMonitor.class);
+
+    private static final Monitor MONITOR;
+
+    private CPUMemoryMonitor(){}
+
+    //static block initialization for exception handling
+    static {
+        try {
+            MONITOR = new CPUMemoryMonitor();
+        } catch (Exception e) {
+            throw new RuntimeException("Exception occurred in creating singleton instance");
+        }
+    }
+
+    public static Monitor getInstance() {
+        return MONITOR;
+    }
+
 
     /**
      * This method sets the CPU Memory Ratio as a ratio of used CPU memory to total CPU memory at an instance time.
@@ -46,17 +63,10 @@ public class CPUMemoryMonitor implements Monitor {
     }
 
     public float getThresholdValue() {
-        Object cpuRatioThreshold = Properties.getProperty(Constants.IncidentHandlerThValues.CPU_RATIO_THRESHOLD);
-        if (cpuRatioThreshold instanceof Float) {
-            return (float) cpuRatioThreshold;
-        } else {
-            log.error(Constants.IncidentHandlerThValues.CPU_RATIO_THRESHOLD
-                    + " property has been defined incorrectly in the properties file.");
-            return Float.parseFloat(null);
-        }
+        return (float) Properties.getProperty(Constants.Threshold.CPU_RATIO_THRESHOLD, Float.class.getName());
     }
 
-    public boolean checkMonitorValue() {
+    public boolean isMonitorValueHealthy() {
         float monitorValue = getMonitorValue();
         float thresholdValue = getThresholdValue();
 

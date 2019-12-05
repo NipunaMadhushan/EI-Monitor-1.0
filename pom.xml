@@ -11,6 +11,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
             <version>3.0.0</version>
@@ -57,7 +62,7 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Private-Package>
-                            org.apache.commons.*
+                            org.apache.commons.*,org.json.simple.*
                         </Private-Package>
                         <Import-Package>org.osgi.framework.*,org.osgi.service.*</Import-Package>
                         <Export-Package>org.wso2.carbon.eimonitor.*</Export-Package>

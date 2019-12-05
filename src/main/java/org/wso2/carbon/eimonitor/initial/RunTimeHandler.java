@@ -42,14 +42,7 @@ public class RunTimeHandler extends Thread {
     public RunTimeHandler(ScheduledExecutorService service) {
         this.service = service;
 
-        //Clean the file directories of data
-        FileCleaner fileCleaner = new FileCleaner();
-        fileCleaner.cleanDirectory(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY
-                , String.class.getName()) + "/Data");
-
-        //Generate the file directories of data
-        FileGenerator fileGenerator = new FileGenerator();
-        fileGenerator.generateAllDirectories();
+        deleteAndGenerateDirectories();
 
         try {
             RunTimeHandler.sleep(30000);
@@ -64,15 +57,19 @@ public class RunTimeHandler extends Thread {
                 CPUMemoryMonitor.getInstance().getMonitorValue() + ", Load Average: " + LoadAverageMonitor.getInstance()
                 .getMonitorValue() + ", Avg Max Block Time: " + ThreadStatusMonitor.getInstance().getMonitorValue());
 
-        if (!isMonitorValuesHealthy()) {
+        /*if (!isMonitorValuesHealthy()) {
             log.error("An incident has been captured!!!");
             ScheduleManager.getInstance().startIncidentHandler();
             service.shutdown();
-
-        }
+        }*/
     }
 
-    private static boolean isMonitorValuesHealthy() {
+    /**
+     * This method checks each monitor value whether it has gone over the threshold value.
+     * @return The output message as a boolean whether the monitor values are normal or has gone over the threshold
+     * values.
+     */
+    private boolean isMonitorValuesHealthy() {
         boolean state = true;
 
         List<Monitor> monitors = MonitorFactory.getInstance().getMonitors();
@@ -84,5 +81,30 @@ public class RunTimeHandler extends Thread {
         }
 
         return state;
+    }
+
+    /**
+     * This method deletes the previous directory where the data had been stored and create a new directory at the same
+     * file path.
+     */
+    private void deleteAndGenerateDirectories() {
+        //Clean the file directories of data
+        FileCleaner fileCleaner = new FileCleaner();
+        fileCleaner.cleanDirectory(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY
+                , String.class.getName()) + "/Data");
+
+        //Generate the file directories of data
+        FileGenerator fileGenerator = new FileGenerator();
+        fileGenerator.generateAllDirectories();
+        fileGenerator.writeEmptyJSONArray(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY
+                , String.class.getName()) + Constants.DirectoryNames.MONITOR_VALUES_DIRECTORY + "/heapMemoryData.json");
+        fileGenerator.writeEmptyJSONArray(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY
+                , String.class.getName()) + Constants.DirectoryNames.MONITOR_VALUES_DIRECTORY + "/cpuMemoryData.json");
+        fileGenerator.writeEmptyJSONArray(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY
+                , String.class.getName()) + Constants.DirectoryNames.MONITOR_VALUES_DIRECTORY
+                + "/loadAverageData.json");
+        fileGenerator.writeEmptyJSONArray(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY
+                , String.class.getName()) + Constants.DirectoryNames.MONITOR_VALUES_DIRECTORY
+                + "/threadStatusData.json");
     }
 }

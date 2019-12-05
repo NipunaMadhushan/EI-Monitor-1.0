@@ -5,10 +5,10 @@
       <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="EI-Monitor-0.3.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="org.wso2.carbon.eimonitor.initial.Activator" bundleSymbolicName="EI-Monitor" bundleVersion="0.3.0" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
         <additionalProperties>
           <property key="Bundle-Name" value="EI-Monitor" />
-          <property key="Private-Package" value="org.apache.commons.*" />
+          <property key="Private-Package" value="org.apache.commons.*,org.json.simple.*" />
           <property key="Import-Package" value="org.osgi.framework.*,org.osgi.service.*" />
           <property key="Export-Package" value="org.wso2.carbon.eimonitor.*" />
-          <property key="Include-Resource" value="EI_Monitor_Configurations.properties=$MODULE_DIR$/src/main/resources/EI_Monitor_Configurations.properties,configurations.properties=$MODULE_DIR$/src/main/resources/configurations.properties,log4j2.properties=$MODULE_DIR$/src/main/resources/log4j2.properties" />
+          <property key="Include-Resource" value="report/test.html=$MODULE_DIR$/src/main/resources/report/test.html,report/report.html=$MODULE_DIR$/src/main/resources/report/report.html,report/threadStatusData.json=$MODULE_DIR$/src/main/resources/report/threadStatusData.json,report/heapMemoryData.json=$MODULE_DIR$/src/main/resources/report/heapMemoryData.json,report/wso2-logo.png=$MODULE_DIR$/src/main/resources/report/wso2-logo.png,report/data.json=$MODULE_DIR$/src/main/resources/report/data.json,report/loadAverageData.json=$MODULE_DIR$/src/main/resources/report/loadAverageData.json,report/cpuMemoryData.json=$MODULE_DIR$/src/main/resources/report/cpuMemoryData.json,EI_Monitor_Configurations.properties=$MODULE_DIR$/src/main/resources/EI_Monitor_Configurations.properties,log4j2.properties=$MODULE_DIR$/src/main/resources/log4j2.properties" />
         </additionalProperties>
         <additionalJARContents />
       </configuration>
@@ -22,11 +22,13 @@
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: com.googlecode.json-simple:json-simple:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: junit:junit:4.10" level="project" />
     <orderEntry type="library" name="Maven: org.awaitility:awaitility:3.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-library:1.3" level="project" />
     <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />

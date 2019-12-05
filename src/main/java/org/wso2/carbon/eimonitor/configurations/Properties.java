@@ -41,7 +41,9 @@ public final class Properties {
     public static Object getProperty(String key, String dataType) {
         try {
             java.util.Properties properties = new java.util.Properties();
-            String fileName = baseDirectory + "/conf/EI-Monitor-Configurations.properties";
+            String fileName = baseDirectory + "/conf/EI_Monitor_Configurations.properties";
+            //String fileName = "/home/nipuna/EI-Monitor-1.0/src/main/resources/EI_Monitor_Configurations.properties";
+
             FileInputStream file = new FileInputStream(fileName);
             properties.load(file);
 

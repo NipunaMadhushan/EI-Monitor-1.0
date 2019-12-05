@@ -18,11 +18,20 @@ package org.wso2.carbon.eimonitor.monitor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.wso2.carbon.eimonitor.configurations.Properties;
 import org.wso2.carbon.eimonitor.configurations.configuredvalues.Constants;
-
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * This class is used to read Heap Memory.
@@ -32,6 +41,11 @@ public class HeapMemoryMonitor implements Monitor {
     private static final Log log = LogFactory.getLog(HeapMemoryMonitor.class);
 
     private static final Monitor MONITOR;
+
+    //private static final String JSON_FILE_DIRECTORY =
+    //        System.getProperty("user.dir") + "/src/main/resources/report/heapMemoryData.json";
+    private static final String JSON_FILE_DIRECTORY = Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY,
+            String.class.getName()) + Constants.DirectoryNames.MONITOR_VALUES_DIRECTORY + "/heapMemoryData.json";
 
     private HeapMemoryMonitor(){}
 
@@ -59,7 +73,13 @@ public class HeapMemoryMonitor implements Monitor {
         //Calculate heap memory ratio
         float usedHeapMemory = (float) memoryMXBeanProxy.getHeapMemoryUsage().getUsed();
         float committedHeapMemory = (float) memoryMXBeanProxy.getHeapMemoryUsage().getCommitted();
-        return usedHeapMemory / committedHeapMemory;
+        float monitorValue = usedHeapMemory / committedHeapMemory;
+
+        //create the json object from the monitor value with the time and write it to a json file
+        JSONObject jsonObject = createJSONObject(monitorValue);
+        writeJSONObject(jsonObject);
+
+        return monitorValue;
     }
 
     public float getThresholdValue() {
@@ -75,6 +95,26 @@ public class HeapMemoryMonitor implements Monitor {
             return true;
         } else {
             return false;
+        }
+    }
+
+    private JSONObject createJSONObject(float monitorValue) {
+        String timeStamp = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("time", timeStamp);
+        jsonObject.put("value", monitorValue);
+
+        return jsonObject;
+    }
+
+    private void writeJSONObject(JSONObject jsonObject) {
+        try {
+            JSONParser jsonParser = new JSONParser();
+            JSONArray jsonArray = (JSONArray) jsonParser.parse(new FileReader(HeapMemoryMonitor.JSON_FILE_DIRECTORY));
+            jsonArray.add(jsonObject);
+            Files.write(Paths.get(HeapMemoryMonitor.JSON_FILE_DIRECTORY), jsonArray.toJSONString().getBytes());
+        } catch (ParseException | IOException e) {
+            log.error(e.getMessage() + "cannot write the json object to a json file..");
         }
     }
 }

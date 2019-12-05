@@ -1,8 +1,184 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <title>WSO2 Enterprise Integrator Monitor</title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        var filePath =
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            $.ajax({ url: 'http://localhost:3030/MonitorValues/heapMemoryData.json',
+                type: "GET",
+                dataType: "json",
+
+                success: function (data) {
+                    var dataList = [];
+                    for (var a = 0; a < data.length; a++) {
+                        console.log(typeof data[a].time);
+                        console.log(data[a].time);
+                        dataList.push([data[a].time, data[a].value]);
+                    }
+
+                    var dataTable = new google.visualization.DataTable();
+                    dataTable.addColumn('string', 'Time');
+                    dataTable.addColumn('number', 'Heap Memory Ratio');
+
+                    dataTable.addRows(dataList);
+
+                    var options = {
+                        title: 'Heap Memory',
+                        hAxis: {title: 'Time',  titleTextStyle: {color: '#333'}},
+                        vAxis: {minValue: 0, maxValue: 1}
+                    };
+
+                    var chart = new google.visualization.AreaChart(document.getElementById("heapMemoryData"));
+                    chart.draw(dataTable, options);
+                }
+            });
+        }
+    </script>
+
+    <script type="text/javascript">
+        var filePath =
+            google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            $.ajax({ url: 'http://localhost:3030/MonitorValues/cpuMemoryData.json',
+                type: "GET",
+                dataType: "json",
+
+                success: function (data) {
+                    var dataList = [];
+                    for (var a = 0; a < data.length; a++) {
+                        console.log(typeof data[a].time);
+                        console.log(data[a].time);
+                        dataList.push([data[a].time, data[a].value]);
+                    }
+
+                    var dataTable = new google.visualization.DataTable();
+                    dataTable.addColumn('string', 'Time');
+                    dataTable.addColumn('number', 'CPU Memory Ratio');
+
+                    dataTable.addRows(dataList);
+
+                    var options = {
+                        title: 'CPU Memory',
+                        hAxis: {title: 'Time',  titleTextStyle: {color: '#333'}},
+                        vAxis: {minValue: 0, maxValue: 1}
+                    };
+
+                    var chart = new google.visualization.AreaChart(document.getElementById("cpuMemoryData"));
+                    chart.draw(dataTable, options);
+                }
+            });
+        }
+    </script>
+
+    <script type="text/javascript">
+        var filePath =
+            google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            $.ajax({ url: 'http://localhost:3030/MonitorValues/loadAverageData.json',
+                type: "GET",
+                dataType: "json",
+
+                success: function (data) {
+                    var dataList = [];
+                    for (var a = 0; a < data.length; a++) {
+                        console.log(typeof data[a].time);
+                        console.log(data[a].time);
+                        dataList.push([data[a].time, data[a].value]);
+                    }
+
+                    var dataTable = new google.visualization.DataTable();
+                    dataTable.addColumn('string', 'Time');
+                    dataTable.addColumn('number', 'System Load Average');
+
+                    dataTable.addRows(dataList);
+
+                    var options = {
+                        title: 'System Load Average',
+                        hAxis: {title: 'Time',  titleTextStyle: {color: '#333'}},
+                        vAxis: {minValue: 0, maxValue: 10}
+                    };
+
+                    var chart = new google.visualization.AreaChart(document.getElementById("loadAverageData"));
+                    chart.draw(dataTable, options);
+                }
+            });
+        }
+    </script>
+
+    <script type="text/javascript">
+        var filePath =
+            google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            $.ajax({ url: 'http://localhost:3030/MonitorValues/threadStatusData.json',
+                type: "GET",
+                dataType: "json",
+
+                success: function (data) {
+                    var dataList = [];
+                    for (var a = 0; a < data.length; a++) {
+                        console.log(typeof data[a].time);
+                        console.log(data[a].time);
+                        dataList.push([data[a].time, data[a].value]);
+                    }
+
+                    var dataTable = new google.visualization.DataTable();
+                    dataTable.addColumn('string', 'Time');
+                    dataTable.addColumn('number', 'Avg Maximum Blocked Time Among Threads');
+
+                    dataTable.addRows(dataList);
+
+                    var options = {
+                        title: 'Avg Maximum Blocked Time Among Threads',
+                        hAxis: {title: 'Time',  titleTextStyle: {color: '#333'}},
+                        vAxis: {minValue: 0, maxValue: 1}
+                    };
+
+                    var chart = new google.visualization.AreaChart(document.getElementById("threadStatusData"));
+                    chart.draw(dataTable, options);
+                }
+            });
+        }
+    </script>
+
+    <script type="text/javascript">
+        function getNetworkLoad() {
+            $.ajax({
+                url: 'http://localhost:3030/NetworkLoad/networkLoad.txt',
+                type: "GET",
+                dataType: "text",
+
+                success: function (data) {
+                    alert(data)
+                }
+            });
+        }
+    </script>
+
+    <script type="text/javascript">
+        function getNetworkLoad() {
+            $.ajax({
+                url: 'http://localhost:3030/Logs/carbon.log',
+                type: "GET",
+                dataType: "text",
+
+                success: function (data) {
+                    alert(data)
+                }
+            });
+        }
+    </script>
 </head>
 <style>
     canvas{
@@ -10,47 +186,29 @@
     }
 </style>
 <body style="background-color: khaki">
-    <p><img src="/home/nipuna/Desktop/wso2-logo.png" style="float:right;width:350px;height:200px;"></p>
+    <p><img src="wso2-logo.png" style="float:right;width:500px;height:300px;" alt="This is the logo"></p>
     <h1 style="font-size:60px;color: brown;font-style: oblique">WSO2 Enterprise Integrator Monitor</h1>
     <pre style="font-size: 20px;font-style: inherit">
-    WSO2 Enterprise Integrator Monitor is a tool that can be used to monitor an instance of Enterprise Integrator(EI)
-    and find the reason for an issue occur in the EI. When an issue occurs in a production server, to investigate
-    the incident, we need to fetch several information from the server instance. This tool automatically extracts useful
-    information from the server when there are potential issues.
+    WSO2 Enterprise Integrator Monitor is a tool that can be used to monitor an instance of Enterprise
+    Integrator(EI) and find the reason for an issue occur in the EI. When an issue occurs in a production
+    server, to investigate the incident, we need to fetch several information from the server instance.
+    This tool automatically extracts useful information from the server when there are potential issues.
     </pre>
 
     <p style="font-size: 20px">The Monitored details regarding the last issue is as follows.</p>
 
     <h4>Heap Memory</h4>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-        google.charts.load('current', {'packages':['corechart']});
-        google.charts.setOnLoadCallback(drawChart);
-        var dataList = [['Time', 'Heap Memory Ratio', 'Threshold'],
-            ['2013',  0.8,      0.5],
-            ['2014',  0.5,      0.5],
-            ['2015',  0.7,       0.5],
-            ['2016',  0.6,      0.5]];
-        dataList.push(['2017',  0.6,      0.5]);
-
-        function drawChart() {
-
-            var data = google.visualization.arrayToDataTable(dataList);
-
-            var options = {
-                title: 'Heap Memory',
-                hAxis: {title: 'Time',  titleTextStyle: {color: '#333'}},
-                vAxis: {minValue: 0, maxValue: 1}
-            };
-
-            var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
-            chart.draw(data, options);
-        }
-
-    </script>
-    <div id="chart_div" style="width: 1000px; height: 500px;"></div>
+    <div id="heapMemoryData" style="width: 1000px; height: 500px;">new</div>
     <h4>CPU Memory</h4>
+    <div id="cpuMemoryData" style="width: 1000px; height: 500px;">new</div>
     <h4>LoadAverage</h4>
+    <div id="loadAverageData" style="width: 1000px; height: 500px;">new</div>
     <h4>ThreadStatus</h4>
+    <div id="threadStatusData" style="width: 1000px; height: 500px;">new</div>
+    <h4>Network Load</h4>
+    <button onclick="getNetworkLoad()">Click me</button>
+    <h4>Carbon Logs</h4>
+    <button onclick="getNetworkLoad()">Click me</button>
+
 </body>
 </html>

@@ -28,10 +28,11 @@ public final class Constants {
      */
     public static class DirectoryNames {
         public static final String BASE_DIRECTORY = "base.directory";
-        public static final String HEAP_DUMP_FILE_DIRECTORY = "/Data/Heap Dumps";
-        public static final String THREAD_DUMP_FILE_DIRECTORY = "/Data/Thread Dumps";
-        public static final String NETWORK_LOAD_FILE_DIRECTORY = "/Data/Network Load";
+        public static final String HEAP_DUMP_FILE_DIRECTORY = "/Data/HeapDumps";
+        public static final String THREAD_DUMP_FILE_DIRECTORY = "/Data/ThreadDumps";
+        public static final String NETWORK_LOAD_FILE_DIRECTORY = "/Data/NetworkLoad";
         public static final String LOG_FILE_DIRECTORY = "/Data/Logs";
+        public static final String MONITOR_VALUES_DIRECTORY = "/Data/MonitorValues";
     }
 
     /**

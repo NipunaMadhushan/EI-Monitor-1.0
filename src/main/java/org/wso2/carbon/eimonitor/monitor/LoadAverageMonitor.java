@@ -71,7 +71,7 @@ public class LoadAverageMonitor implements Monitor {
         double systemLoadAverage = operatingSystemMXBean.getSystemLoadAverage();
 
         //create the json object from the monitor value with the time and write it to a json file
-        JSONObject jsonObject = createJSONObject((float) systemLoadAverage);
+        JSONObject jsonObject = createJSONObject((float) systemLoadAverage, getThresholdValue());
         writeJSONObject(jsonObject);
 
         return (float) systemLoadAverage;
@@ -93,11 +93,12 @@ public class LoadAverageMonitor implements Monitor {
         }
     }
 
-    private JSONObject createJSONObject(float monitorValue) {
+    private JSONObject createJSONObject(float monitorValue, float thresholdValue) {
         String timeStamp = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("time", timeStamp);
         jsonObject.put("value", monitorValue);
+        jsonObject.put("threshold", thresholdValue);
 
         return jsonObject;
     }

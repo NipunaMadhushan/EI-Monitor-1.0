@@ -41,8 +41,6 @@ public class CPUMemoryMonitor implements Monitor {
     private static final Log log = LogFactory.getLog(CPUMemoryMonitor.class);
 
     private static final Monitor MONITOR;
-    //private static final String JSON_FILE_DIRECTORY
-    //        = System.getProperty("user.dir") + "/src/main/resources/report/cpuMemoryData.json";
     private static final String JSON_FILE_DIRECTORY = Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY,
             String.class.getName()) + Constants.DirectoryNames.MONITOR_VALUES_DIRECTORY + "/cpuMemoryData.json";
 
@@ -69,17 +67,13 @@ public class CPUMemoryMonitor implements Monitor {
     public float getMonitorValue() {
         OperatingSystemMXBean operatingSystemMXBean =
                 (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
-        //Calculate the CPU memory ratio
-        long totalMemory = operatingSystemMXBean.getTotalPhysicalMemorySize();
-        long freeMemory = operatingSystemMXBean.getFreePhysicalMemorySize();
+        double monitorValue = operatingSystemMXBean.getProcessCpuLoad();
 
-        float monitorValue = (float) freeMemory / (float) totalMemory;
-
-        //create the json object from the monitor value with the time and write it to a json file
-        JSONObject jsonObject = createJSONObject(monitorValue);
+        //create the json object from the monitor value  and threshold value with the time and write it to a json file
+        JSONObject jsonObject = createJSONObject((float) monitorValue, getThresholdValue());
         writeJSONObject(jsonObject);
 
-        return  monitorValue;
+        return  (float) monitorValue;
     }
 
     public float getThresholdValue() {
@@ -98,11 +92,12 @@ public class CPUMemoryMonitor implements Monitor {
         }
     }
 
-    private JSONObject createJSONObject(float monitorValue) {
+    private JSONObject createJSONObject(float monitorValue, float thresholdValue) {
         String timeStamp = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("time", timeStamp);
         jsonObject.put("value", monitorValue);
+        jsonObject.put("threshold", thresholdValue);
 
         return jsonObject;
     }

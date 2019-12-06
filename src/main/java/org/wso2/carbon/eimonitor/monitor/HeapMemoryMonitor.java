@@ -76,7 +76,7 @@ public class HeapMemoryMonitor implements Monitor {
         float monitorValue = usedHeapMemory / committedHeapMemory;
 
         //create the json object from the monitor value with the time and write it to a json file
-        JSONObject jsonObject = createJSONObject(monitorValue);
+        JSONObject jsonObject = createJSONObject(monitorValue, getThresholdValue());
         writeJSONObject(jsonObject);
 
         return monitorValue;
@@ -98,11 +98,12 @@ public class HeapMemoryMonitor implements Monitor {
         }
     }
 
-    private JSONObject createJSONObject(float monitorValue) {
+    private JSONObject createJSONObject(float monitorValue, float thresholdValue) {
         String timeStamp = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("time", timeStamp);
         jsonObject.put("value", monitorValue);
+        jsonObject.put("threshold", thresholdValue);
 
         return jsonObject;
     }

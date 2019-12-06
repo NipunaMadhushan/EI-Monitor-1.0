@@ -88,7 +88,7 @@ public class ThreadStatusMonitor implements Monitor {
             }
         }
         //create the json object from the monitor value with the time and write it to a json file
-        JSONObject jsonObject = createJSONObject(avgMaxBlockedTime);
+        JSONObject jsonObject = createJSONObject(avgMaxBlockedTime, getThresholdValue());
         writeJSONObject(jsonObject);
 
         return avgMaxBlockedTime;
@@ -110,11 +110,12 @@ public class ThreadStatusMonitor implements Monitor {
         }
     }
 
-    private JSONObject createJSONObject(float monitorValue) {
+    private JSONObject createJSONObject(float monitorValue, float thresholdValue) {
         String timeStamp = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("time", timeStamp);
         jsonObject.put("value", monitorValue);
+        jsonObject.put("threshold", thresholdValue);
 
         return jsonObject;
     }

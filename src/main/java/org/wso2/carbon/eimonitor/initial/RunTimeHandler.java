@@ -57,7 +57,7 @@ public class RunTimeHandler extends Thread {
 
     @Override
     public void run() {
-        log.info("Heap Ratio: " + HeapMemoryMonitor.getInstance().getMonitorValue() + ", CPU Ratio: " +
+        log.info("Heap Memory Ratio: " + HeapMemoryMonitor.getInstance().getMonitorValue() + ", CPU Usage: " +
                 CPUMemoryMonitor.getInstance().getMonitorValue() + ", Load Average: " + LoadAverageMonitor.getInstance()
                 .getMonitorValue() + ", Avg Max Block Time: " + ThreadStatusMonitor.getInstance().getMonitorValue());
 

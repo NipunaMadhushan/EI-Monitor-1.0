@@ -19,17 +19,18 @@
                     for (var a = 0; a < data.length; a++) {
                         console.log(typeof data[a].time);
                         console.log(data[a].time);
-                        dataList.push([data[a].time, data[a].value]);
+                        dataList.push([data[a].time, data[a].value, data[a].threshold]);
                     }
 
                     var dataTable = new google.visualization.DataTable();
                     dataTable.addColumn('string', 'Time');
-                    dataTable.addColumn('number', 'Heap Memory Ratio');
+                    dataTable.addColumn('number', 'Heap Memory Usage');
+                    dataTable.addColumn('number', 'Threshold');
 
                     dataTable.addRows(dataList);
 
                     var options = {
-                        title: 'Heap Memory',
+                        title: 'Heap Memory Usage',
                         hAxis: {title: 'Time',  titleTextStyle: {color: '#333'}},
                         vAxis: {minValue: 0, maxValue: 1}
                     };
@@ -56,17 +57,18 @@
                     for (var a = 0; a < data.length; a++) {
                         console.log(typeof data[a].time);
                         console.log(data[a].time);
-                        dataList.push([data[a].time, data[a].value]);
+                        dataList.push([data[a].time, data[a].value, data[a].threshold]);
                     }
 
                     var dataTable = new google.visualization.DataTable();
                     dataTable.addColumn('string', 'Time');
-                    dataTable.addColumn('number', 'CPU Memory Ratio');
+                    dataTable.addColumn('number', 'CPU Usage');
+                    dataTable.addColumn('number', 'Threshold');
 
                     dataTable.addRows(dataList);
 
                     var options = {
-                        title: 'CPU Memory',
+                        title: 'CPU Usage',
                         hAxis: {title: 'Time',  titleTextStyle: {color: '#333'}},
                         vAxis: {minValue: 0, maxValue: 1}
                     };
@@ -93,12 +95,13 @@
                     for (var a = 0; a < data.length; a++) {
                         console.log(typeof data[a].time);
                         console.log(data[a].time);
-                        dataList.push([data[a].time, data[a].value]);
+                        dataList.push([data[a].time, data[a].value, data[a].threshold]);
                     }
 
                     var dataTable = new google.visualization.DataTable();
                     dataTable.addColumn('string', 'Time');
                     dataTable.addColumn('number', 'System Load Average');
+                    dataTable.addColumn('number', 'Threshold');
 
                     dataTable.addRows(dataList);
 
@@ -130,12 +133,13 @@
                     for (var a = 0; a < data.length; a++) {
                         console.log(typeof data[a].time);
                         console.log(data[a].time);
-                        dataList.push([data[a].time, data[a].value]);
+                        dataList.push([data[a].time, data[a].value, data[a].threshold]);
                     }
 
                     var dataTable = new google.visualization.DataTable();
                     dataTable.addColumn('string', 'Time');
                     dataTable.addColumn('number', 'Avg Maximum Blocked Time Among Threads');
+                    dataTable.addColumn('number', 'Threshold');
 
                     dataTable.addRows(dataList);
 
@@ -197,18 +201,18 @@
 
     <p style="font-size: 20px">The Monitored details regarding the last issue is as follows.</p>
 
-    <h4>Heap Memory</h4>
+    <h4>Heap Memory Usage</h4>
     <div id="heapMemoryData" style="width: 1000px; height: 500px;">new</div>
-    <h4>CPU Memory</h4>
+    <h4>CPU Memory Usage</h4>
     <div id="cpuMemoryData" style="width: 1000px; height: 500px;">new</div>
     <h4>LoadAverage</h4>
     <div id="loadAverageData" style="width: 1000px; height: 500px;">new</div>
     <h4>ThreadStatus</h4>
     <div id="threadStatusData" style="width: 1000px; height: 500px;">new</div>
     <h4>Network Load</h4>
-    <button onclick="getNetworkLoad()">Click me</button>
+    <button onclick="getNetworkLoad()">Press the Button</button>
     <h4>Carbon Logs</h4>
-    <button onclick="getNetworkLoad()">Click me</button>
+    <button onclick="getNetworkLoad()">Press the Button</button>
 
 </body>
 </html>

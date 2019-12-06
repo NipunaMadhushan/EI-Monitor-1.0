@@ -48,11 +48,6 @@ public class RunTimeHandler extends Thread {
 
         deleteAndGenerateDirectories();
 
-        try {
-            RunTimeHandler.sleep(15000);
-        } catch (InterruptedException e) {
-            log.error(e.getMessage());
-        }
     }
 
     @Override

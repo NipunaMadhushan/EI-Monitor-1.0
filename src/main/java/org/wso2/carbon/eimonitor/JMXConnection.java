@@ -51,10 +51,10 @@ public class JMXConnection {
 
             JMXConnector jmxConnector = JMXConnectorFactory.connect(url, env);
             mbeanServerConnection = jmxConnector.getMBeanServerConnection();
-            log.info("Successfully connected to the URL :- " + urlString);
+            //log.info("Successfully connected to the URL :- " + urlString);
 
         } catch (Exception e) {
-            log.error("JMX Connection Failed !!! " + e.getMessage());
+            //log.error("JMX Connection Failed !!! " + e.getMessage());
         }
         return mbeanServerConnection;
     }

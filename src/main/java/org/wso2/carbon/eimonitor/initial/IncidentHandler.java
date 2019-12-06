@@ -52,6 +52,7 @@ public class IncidentHandler extends Thread {
     private ScheduledExecutorService service;
 
     public IncidentHandler(ScheduledExecutorService service) {
+        log.info("IncidentHandler has been started..");
         this.service = service;
     }
 
@@ -72,9 +73,13 @@ public class IncidentHandler extends Thread {
             if (this.monitoringCount >= incidentTimeCountThreshold) {
 
                 if (isIncidentTimePeriodHealthy()) {
-                    ScheduleManager.getInstance().startDataExtractorHandler();
+                    log.info("Previous captured incident is not an issue..");
+                    ScheduleManager scheduleManager = new ScheduleManager();
+                    scheduleManager.startRunTimeHandler();
                 } else {
-                    ScheduleManager.getInstance().startRunTimeHandler();
+                    log.warn("Previous captured incident is an issue..");
+                    ScheduleManager scheduleManager = new ScheduleManager();
+                    scheduleManager.startDataExtractorHandler();
                 }
                 service.shutdown();
             }
@@ -88,10 +93,10 @@ public class IncidentHandler extends Thread {
     }
 
     private boolean isIncidentTimePeriodHealthy() {
-        boolean state = false;
+        boolean state = true;
         for (int i = 0; i < monitors.size(); i++) {
             if (avgMonitorValues.get(i) > monitors.get(i).getThresholdValue()) {
-                state = true;
+                state = false;
             }
         }
 
@@ -107,11 +112,12 @@ public class IncidentHandler extends Thread {
         }
     }
 
-    public void extractData() {
+    private void extractData() {
         List<DataExtractor> dataExtractors = DataExtractorFactory.getInstance().getDataExtractors();
 
         for (DataExtractor dataExtractor: dataExtractors) {
             dataExtractor.extractData();
         }
+        log.info("Data has been extracted successfully");
     }
 }

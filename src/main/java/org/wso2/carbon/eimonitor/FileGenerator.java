@@ -16,6 +16,7 @@
 
 package org.wso2.carbon.eimonitor;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONArray;
@@ -99,6 +100,15 @@ public class FileGenerator {
             Files.write(Paths.get(fileName), jsonArray.toJSONString().getBytes());
         } catch (IOException e) {
             log.error(e.getMessage() + "cannot write the json object to a json file..");
+        }
+    }
+
+    public void copyFileDirectory(File source, File dest) {
+        try {
+            FileUtils.copyDirectory(source, dest);
+        } catch (IOException e) {
+            log.error(e.getMessage() +
+                    "cannot copy the report file to the folder where the data is being extracted");
         }
     }
 

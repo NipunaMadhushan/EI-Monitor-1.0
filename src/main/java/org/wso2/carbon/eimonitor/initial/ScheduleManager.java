@@ -22,23 +22,6 @@ public class ScheduleManager {
     private int incidentHandlerTimePeriod = (int) Properties.getProperty(Constants.TimePeriod
             .INCIDENT_HANDLER_TIME_PERIOD, Integer.class.getName());
 
-    private static final ScheduleManager INSTANCE;
-
-    private ScheduleManager(){}
-
-    //static block initialization for exception handling
-    static {
-        try {
-            INSTANCE = new ScheduleManager();
-        } catch (Exception e) {
-            throw new RuntimeException("Exception occurred in creating singleton instance");
-        }
-    }
-
-    public static ScheduleManager getInstance() {
-        return INSTANCE;
-    }
-
     public void startRunTimeHandler() {
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         RunTimeHandler runTimeHandler = new RunTimeHandler(service);

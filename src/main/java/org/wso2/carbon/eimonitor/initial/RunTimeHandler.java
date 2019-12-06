@@ -28,7 +28,10 @@ import org.wso2.carbon.eimonitor.monitor.LoadAverageMonitor;
 import org.wso2.carbon.eimonitor.monitor.Monitor;
 import org.wso2.carbon.eimonitor.monitor.MonitorFactory;
 import org.wso2.carbon.eimonitor.monitor.ThreadStatusMonitor;
+
+import java.io.File;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ScheduledExecutorService;
 
 /**
@@ -40,12 +43,13 @@ public class RunTimeHandler extends Thread {
     private ScheduledExecutorService service;
 
     public RunTimeHandler(ScheduledExecutorService service) {
+        log.info("RunTimeHandler has been started..");
         this.service = service;
 
         deleteAndGenerateDirectories();
 
         try {
-            RunTimeHandler.sleep(30000);
+            RunTimeHandler.sleep(15000);
         } catch (InterruptedException e) {
             log.error(e.getMessage());
         }
@@ -57,11 +61,12 @@ public class RunTimeHandler extends Thread {
                 CPUMemoryMonitor.getInstance().getMonitorValue() + ", Load Average: " + LoadAverageMonitor.getInstance()
                 .getMonitorValue() + ", Avg Max Block Time: " + ThreadStatusMonitor.getInstance().getMonitorValue());
 
-        /*if (!isMonitorValuesHealthy()) {
+        if (!isMonitorValuesHealthy()) {
             log.error("An incident has been captured!!!");
-            ScheduleManager.getInstance().startIncidentHandler();
+            ScheduleManager scheduleManager = new ScheduleManager();
+            scheduleManager.startIncidentHandler();
             service.shutdown();
-        }*/
+        }
     }
 
     /**
@@ -106,5 +111,12 @@ public class RunTimeHandler extends Thread {
         fileGenerator.writeEmptyJSONArray(Properties.getProperty(Constants.DirectoryNames.BASE_DIRECTORY
                 , String.class.getName()) + Constants.DirectoryNames.MONITOR_VALUES_DIRECTORY
                 + "/threadStatusData.json");
+
+        //Copy the report files to the folder where the data is being extracted
+        File source = new File(System.getProperty("user.dir") + "/wso2/report");
+        File dest = new File(Objects.requireNonNull(Properties.getProperty(Constants.DirectoryNames
+                .BASE_DIRECTORY, String.class.getName())) + "/Data");
+        fileGenerator.copyFileDirectory(source, dest);
     }
 }
+

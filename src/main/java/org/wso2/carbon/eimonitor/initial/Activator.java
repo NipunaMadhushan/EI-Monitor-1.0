@@ -30,7 +30,8 @@ public class Activator implements BundleActivator {
      * @param context is equal to the bundle contest of the class
      */
     public void start(BundleContext context) {
-        ScheduleManager.getInstance().startRunTimeHandler();
+        ScheduleManager scheduleManager = new ScheduleManager();
+        scheduleManager.startRunTimeHandler();
     }
 
     /**

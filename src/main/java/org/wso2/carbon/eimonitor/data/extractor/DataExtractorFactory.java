@@ -31,7 +31,7 @@ public class DataExtractorFactory {
             {
                 add(HeapDumpGenerator.getInstance());
                 add(ThreadDumpGenerator.getInstance());
-                add(NetworkLoadGenerator.getInstance());
+                //add(NetworkLoadGenerator.getInstance());
                 add(LogExtractor.getInstance());
             }
         };

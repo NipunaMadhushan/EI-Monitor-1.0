@@ -26,7 +26,7 @@ EI monitor has mainly 8 components.
 EI Monitor has been written as a maven project. Use "mvn clean install" command to build the osgi bundle. 
 Then **EI-Monitor_1.0.0.jar** file will be created in the "target" folder.
 
-##**Run the project**
+## **Run the project**
 
 Download WSO2 Enterprise Integrator zip file by using the link https://wso2.com/integration/ and extract it to a 
 directory(**<EI_HOME>**).

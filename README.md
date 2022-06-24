@@ -35,7 +35,7 @@ Go to the **<EI_HOME>/bin** directory and run the following command line on the 
     For Windows - **integrator.bat**
     For Linux - **sh.integrator.sh**
     
-##**Setting property values**
+## **Setting property values**
 
 Many options can be customized through changing values in **configurations.properties** file.
     

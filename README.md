@@ -1,6 +1,6 @@
-#EI Monitor
+# EI Monitor
 
-##**Introduction**
+## **Introduction**
 
 EI Monitor is a tool that can be used to monitor an instance of Enterprise Integrator(EI) and find the reason for an 
 issue occur in the EI.
@@ -21,7 +21,7 @@ EI monitor has mainly 8 components.
     7)Report Generator
     8)report
 
-##**Build the project**
+## **Build the project**
 
 EI Monitor has been written as a maven project. Use "mvn clean install" command to build the osgi bundle. 
 Then **EI-Monitor_1.0.0.jar** file will be created in the "target" folder.
